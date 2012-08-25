@@ -32,6 +32,7 @@ function _M:enter()
 	self.font     = love.graphics.newFont(height*0.06)
 	self.font_sm  = love.graphics.newFont(height*0.03)
 	self.logo = love.graphics.newImage('gfx/Logo.png')
+	self.text_img = love.graphics.newImage('gfx/GameName.png')
 end
 
 function _M:draw()
@@ -42,6 +43,7 @@ function _M:draw()
 	
 	local scale, rot = (math.sin(self.time)*.05)+.95, (self.time / (math.pi*2))
 	lg.draw(self.logo, width/2, height/2, rot, scale, scale, self.logo:getWidth()/2, self.logo:getHeight()/2)
+	lg.draw(self.text_img, width / 2, height / 2 + 64, 0, 1, 1, self.text_img:getWidth()/2, self.text_img:getHeight()/2)
 	
 	if self.selected == 0 then
 		if math.floor(self.time) % 2 == 0 then
@@ -60,7 +62,7 @@ function _M:draw()
 			lg.setColor(self.selected == i and COLOR_SELECTED or COLOR_NORMAL)
 			-- we have to subtract an extra line height, because fonts are=
 			--  rendered from the topline, not the baseline.
-			lg.print(self.options[i][1], indent, (height-fh)-offset) 
+			lg.print(self.options[i][1], indent, (height-fh)-offset)
 			offset = offset + fh
 		end
 	end

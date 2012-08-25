@@ -1,6 +1,38 @@
+-------------------------------------------------------------------------
+-- [gamestate.lua]
+-- lib.gamestate
+-- A state management library
+--
+-- to use, Create a gamestate with Gamestate.new()
+-- then set the callbacks you need. any callbacks you do not set will
+-- simply do nothing.
+--
+-- When you wish to activate a gamestate, call Gamestate.switch(state), 
+-- where 'state' is the gamestate you wish to enter.
+--
+-- By convention, modules defining new states will place a copy of that 
+-- state into gamestate, such that:
+-- 	Gamestate.switch(Gamestate.somestate)
+-- will be valid, and switch to a state named 'somestate'
+--
+--
+-- Callbacks:
+--               enter(self): Invoked whenever we switch to this gamestate
+--               leave(self): Invoked whenever we switch away from this state
+--          update(self, dt): Invoked on the love.update(dt) event
+--                draw(self): Invoked on the love.draw() event
+--          keyreleased(key): Invoked when a keybord key is released
+--  keypressed(key, unicode): Invoked when a keybord key is pressed
+--  mousereleased(x, y, btn): Invoked when a mouse button is released
+--   mousepressed(x, y, btn): Invoked when a mouse button is pressed
+--
+-------------------------------------------------------------------------
 Gamestate = {}
 
 local function __NULL__() end
+
+-------------------------------------------------------------------------
+
 -- default gamestate produces error on every callback
 local function __ERROR__() error("Gamestate not initialized. Use Gamestate.switch()") end
 Gamestate.current = {
@@ -27,6 +59,8 @@ function Gamestate.new()
 	}
 end
 
+-------------------------------------------------------------------------
+
 function Gamestate.switch(to, ...)
 	if not to then return end
 	Gamestate.current:leave()
@@ -35,11 +69,15 @@ function Gamestate.switch(to, ...)
 	Gamestate.current:enter(pre, ...)
 end
 
+-------------------------------------------------------------------------
+
 local _update
 function Gamestate.update(dt)
 	if _update then _update(dt) end
 	Gamestate.current:update(dt)
 end
+
+-------------------------------------------------------------------------
 
 local _keypressed
 function Gamestate.keypressed(key, unicode)
@@ -47,11 +85,15 @@ function Gamestate.keypressed(key, unicode)
 	Gamestate.current:keypressed(key, unicode)
 end
 
+-------------------------------------------------------------------------
+
 local _keyreleased
 function Gamestate.keyreleased(key)
 	if _keyreleased then _keyreleased(key) end
 	Gamestate.current:keyreleased(key)
 end
+
+-------------------------------------------------------------------------
 
 local _mousepressed
 function Gamestate.mousepressed(x,y,btn)
@@ -59,17 +101,23 @@ function Gamestate.mousepressed(x,y,btn)
 	Gamestate.current:mousepressed(x,y,btn)
 end
 
+-------------------------------------------------------------------------
+
 local _mousereleased
 function Gamestate.mousereleased(x,y,btn)
 	if _mousereleased then _mousereleased(x,y,btn) end
 	Gamestate.current:mousereleased(x,y,btn)
 end
 
+-------------------------------------------------------------------------
+
 local _draw
 function Gamestate.draw()
 	if _draw then _draw() end
 	Gamestate.current:draw()
 end
+
+-------------------------------------------------------------------------
 
 function Gamestate.registerEvents()
 	_update            = love.update
@@ -86,5 +134,6 @@ function Gamestate.registerEvents()
 	love.draw          = Gamestate.draw
 end
 
+-------------------------------------------------------------------------
 return Gamestate
 

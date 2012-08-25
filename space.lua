@@ -10,8 +10,12 @@ local grass = love.graphics.newImage("gfx/Grass.png")
 local dirtbottom = love.graphics.newImage("gfx/DirtBottom.png")
 local BKG = love.graphics.newImage("gfx/BKG.png")
 
+local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
+
 local ship_x
 local ship_y
+local ship_shield
+local shpi_height
 local speed = 100
 
 local level = {0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,3,3,3,3,3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,5,4,3,2,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,1,1,1,1,1,1,1,1,1,5,6,5,6,5,6,5,6,5,1,1,1,1,1,1,1,1,2,3,4,3,2,3,2,3,4,5,5,5,5,5,4,3,2,1,0}
@@ -29,7 +33,8 @@ local Enemies = Enemy.Create(love.graphics.newImage("gfx/Enemy2.png"),300,200)
 function state:enter()
 	ship_x = 64
 	ship_y = 320
-
+	ship_shield = 100 -- and this
+	ship_height = 19
 	level_x = -640
 end
 
@@ -42,7 +47,6 @@ function state:update(dt)
 		level_x = -640
 	
 	end
-	
 
 	if love.keyboard.isDown("right") then
 		ship_x = ship_x + speed * dt
@@ -51,10 +55,55 @@ function state:update(dt)
 	end
 	
 	if love.keyboard.isDown("down") then
-		ship_y = ship_y + speed * dt
+		ship_y =  ship_y + speed * dt
 	elseif love.keyboard.isDown("up") then
 		ship_y = ship_y - speed * dt
 	end
+	
+	Collision()
+end
+
+function Collision() -- this is new
+
+CurrentTileX = round(ship_x / 32 + level_x / 32, 0)
+
+if CurrentTileX > 0 and CurrentTileX < level_width then
+		if ship_y < (level[CurrentTileX] + 1) * 32 then
+			ship_shield = ship_shield - 1
+			ship_y = ship_y + 5
+			
+			love.audio.play(SFX_Explosion)
+		end
+
+		if ship_y + ship_height > (15 - level[CurrentTileX]) * 32 then
+			ship_shield = ship_shield + 1
+			ship_y = ship_y - 5
+			
+			love.audio.play(SFX_Explosion)
+		end
+		
+		if ship_y < (level[CurrentTileX + 1] + 1) * 32 then
+			ship_shield = ship_shield - 1
+			ship_y = ship_y + 5
+			
+			love.audio.play(SFX_Explosion)
+		end
+
+		if ship_y + ship_height > (15 - level[CurrentTileX + 1]) * 32 then
+			ship_shield = ship_shield + 1
+			ship_y = ship_y - 5
+			
+			love.audio.play(SFX_Explosion)
+		end
+	end
+end
+
+function round(val, decimal)
+  if (decimal) then
+    return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+  else
+    return math.floor(val+0.5)
+  end
 end
 
 local function drawlevel()

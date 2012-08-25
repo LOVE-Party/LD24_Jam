@@ -127,7 +127,8 @@ local function drawlevel()
 end
 
 function state:draw()
-	love.graphics.draw(BKG,0,0)
+	love.graphics.draw(BKG, - level_x % 800, 0)
+	love.graphics.draw(BKG, - level_x % 800 - 800, 0)
 	love.graphics.draw(spaceship,ship_x,ship_y)
 	Enemies:Draw()
 	drawlevel()

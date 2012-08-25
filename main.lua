@@ -3,6 +3,8 @@
 require "lib.gamestate"
 require "lib.soundmanager"
 
+require "space"	-- current game stuff
+
 
 local dbgfont
 function love.load()

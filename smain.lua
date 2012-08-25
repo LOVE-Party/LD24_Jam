@@ -21,6 +21,8 @@ _M.options = {
 
 local width, height = love.graphics.getMode( )
 
+SCREEN_WIDTH, SCREEN_HEIGHT = width, height
+
 local COLOR_NORMAL   = {200, 200, 200}
 local COLOR_SELECTED = {255, 255, 255}
 

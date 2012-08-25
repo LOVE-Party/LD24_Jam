@@ -71,7 +71,8 @@ function _M:update(dt)
 end
 
 function _M:startgame()
-	-- nothign yet.
+	print("begin playing")
+	Gamestate.switch(Gamestate.space)
 end
 
 

@@ -2,7 +2,7 @@ function love.conf(t)
     t.title    = "LD24 'Evolution' Jam" -- The title of the game window (string)
     t.author   = "LOVE-Party "          -- The author of the game (string)
     t.identity = nil                    -- The name of the save directory (string)
-    t.console  = false                  -- Attach a console (boolean, Windows only)
+    t.console  = true                  -- Attach a console (boolean, Windows only)
 
     t.screen.width      = 800    -- The window width (number)
     t.screen.height     = 600    -- The window height (number)

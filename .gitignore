@@ -1,0 +1,19 @@
+
+# Backup and editor files
+*~
+*.tmp
+*.old
+
+# output files and temporary build files
+*.luac
+*.out
+*.log
+
+# packages
+*.love
+*.zip
+
+# IDE/Texteditor project files
+.idea/
+*.iml
+

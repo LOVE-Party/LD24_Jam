@@ -49,7 +49,7 @@ local HealthBarQuadCache = setmetatable({}, {
 		if n < 0 then return self[0] end -- can't have less than none of a bar
 		if n > 1 then return self[1] end -- ...or more than all.
 		local quad = love.graphics.newQuad(0, 0, n*197, 25, 197, 25)
-		rawset(self, n, quad)
+		self[n] = quad
 		return quad
 	end;
 })
@@ -61,8 +61,8 @@ local HealthBarQuadCache = setmetatable({}, {
 -- ships in the default positions
 function state:enter()
 	-- Reset some player ship defaults
-	self.player.posx      = 64
-	self.player.posy      = 320
+	self.player.pos_x      = 64
+	self.player.pos_y      = 320
 	self.player.shieldmax = 100 -- and this
 	self.player.shield    = self.player.shieldmax
 	self.timer = 0
@@ -74,7 +74,7 @@ function state:enter()
 	self.level.entities = self.enemies
 	-- allows easy addition of entities to a level
 	self.level.addentity = function(self, ent)
-		assert(e and e._TYPE == 'ship', "Can only add entities")
+		assert(ent and ent._TYPE == 'ship', "Can only add entities")
 		self.entities[#self.entities+1] = ent
 	end
 
@@ -104,9 +104,9 @@ function state:update(dt)
 
 	-- spawn additional enemies, to keep the level populated.
 	if self.timer >= 3 then
-		self.timer = self.timer - 10
+		self.timer = 0
 		self:addentity(Ship.new{
-			name = string.format("Enemy", i);
+			name = string.format("Enemy#%03d", #self.enemies);
 			pos_x = math.random(0, 800/2);
 			pos_y = math.random(0, 600/2);
 			texture = Enemy2;
@@ -137,7 +137,7 @@ function state:update(dt)
 			end
 			-- with a mutual test, each entity only has to be tested against
 			-- the entities that come after it.
-			for j=i,#enemies do
+			for j=i+1,#enemies do
 				oship = enemies[j]
 				if ship:testcollision(oship) then
 					ship:dohit(oship.damage*dt)
@@ -146,7 +146,8 @@ function state:update(dt)
 			end
 			-- as a crude hack, we'll simply remove entities that are dead.
 			if ship.state == 'dead' then
-				table.remove(enemies, i) end
+				table.remove(enemies, i)
+			end
 		end
 	end
 end

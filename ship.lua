@@ -7,7 +7,7 @@ local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
 -- creates a new entity
 function ship.new(t)
 	t = t or {}
-	e = {}
+	local e = {}
 	
 	e._TYPE = 'ship'
 	e.pos_x = t.pos_x or 0

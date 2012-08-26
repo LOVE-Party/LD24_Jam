@@ -57,8 +57,8 @@ function state:enter()
 
 	for i = 1, 3 do
 		enemies[i] = Ship.new {
-			posx = math.random(0, 800);
-			posy = math.random(0, 600);
+			pos_x = math.random(0, 800);
+			pos_y = math.random(0, 600);
 			texture = Enemy2;
 			height = 32;
 		}

@@ -162,8 +162,8 @@ end
 function state:draw()
 	local level = self.level
 
-	love.graphics.draw(BKG, - level.x % 800, 0)
-	love.graphics.draw(BKG, - level.x % 800 - 800, 0)
+	love.graphics.draw(BKG, - level.x / 2 % 800, 0)
+	love.graphics.draw(BKG, - level.x / 2 % 800 - 800, 0)
 
 	self:drawlevel()
 

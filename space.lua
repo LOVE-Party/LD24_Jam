@@ -18,7 +18,7 @@ local GUI_Top         = love.graphics.newImage("gfx/GUI_Top.png")
 local GUI_BarBack     = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
 local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
 
-state.player = Ship.new {
+state.player = Ship.new {name = 'player';
 	texture = spaceship;
 	height = 19;
 	npc = false;
@@ -63,7 +63,7 @@ function state:enter()
 	local enemies = self.enemies
 
 	for i = 1, 3 do
-		enemies[i] = Ship.new {
+		enemies[i] = Ship.new {name = string.format("Enemy#%03d", i);
 			pos_x = math.random(0, 800);
 			pos_y = math.random(0, 600);
 			texture = Enemy2;
@@ -84,8 +84,22 @@ function state:update(dt)
 
 	self.player:update(dt, level)
 
-	for _, ship in next, self.enemies do
+	local player, ship, oship = self.player
+	local enemies = self.enemies
+	for i=1,#enemies do
+		ship = enemies[i]
 		ship:update(dt, level)
+		if player:testcolision(ship) then
+			player:dohit(ship.damage*dt)
+			ship:dohit(player.damage*dt)
+		end
+		for j=i,#enemies do
+			oship = enemies[j]
+			if ship:testcolision(oship) then
+				ship:dohit(oship.damage*dt)
+				oship:dohit(ship.damage*dt)
+			end
+		end
 	end
 end
 

@@ -14,9 +14,11 @@ function ship.new(t)
 	e.dir_y = t.dir_y or 0
 
 	e.name      = t.name or 'ship'
-	e.shieldmax = t.shieldmax or 200
-	e.shield    = e.shieldmax*.3 --t.shield or e.shieldmax
+	e.shieldmax = t.shieldmax or 100
+	e.shield    = t.shield or e.shieldmax
 	e.speed     = t.speed or 100
+	e.damage    = t.damage or e.shieldmax *.3
+	e.state     = t.state or 'alive'
 
 	e.texture = t.texture
 	e.height  = t.height
@@ -112,14 +114,22 @@ end
 
 function ship:dohit(n)
 	n = n or 1
-	
+
 	local shield = self.shield - n
 	shield = shield >= 0 and shield or 0
 	shield = shield <= self.shieldmax and shield or self.shieldmax
 	self.shield = shield
 	love.audio.play(SFX_Explosion) -- shouldn't this be using the soundmanager?
 
+	if shield == 0 and self.state ~= 'dead'then
+		self:die()
+	end
+
 	return shield
+end
+
+function ship:die()
+	self.state = 'dead'
 end
 
 return ship

@@ -15,6 +15,7 @@ local dirt       = love.graphics.newImage("gfx/Dirt.png")
 local grass      = love.graphics.newImage("gfx/Grass.png")
 local dirtbottom = love.graphics.newImage("gfx/DirtBottom.png")
 local BKG        = love.graphics.newImage("gfx/BKG.png")
+local Planet        = love.graphics.newImage("gfx/Planet.png")
 
 --GUI
 local GUI             = love.graphics.newImage("gfx/GUI.png")
@@ -165,7 +166,9 @@ function state:draw()
 
 	love.graphics.draw(BKG, - level.x / 2 % 800, 0)
 	love.graphics.draw(BKG, - level.x / 2 % 800 - 800, 0)
-
+	
+	love.graphics.draw(Planet, - level.x / 1.5 % 1600 - 128, 200)
+	
 	self:drawlevel()
 
 	self.player:draw()

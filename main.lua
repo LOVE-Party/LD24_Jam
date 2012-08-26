@@ -14,6 +14,8 @@ function love.load()
 	require "smain"
 	require "scredits"
 
+	io.stdout:setvbuf("line")
+
 	dbgfont = love.graphics.newFont(10)
 	love.graphics.setBackgroundColor(50, 50, 50)
 

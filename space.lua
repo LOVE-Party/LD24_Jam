@@ -131,7 +131,7 @@ function state:update(dt)
 			ship:update(dt, level)
 			-- Ideally, the player would be a normal entity, for now we
 			--special-case them
-			if player:testcolision(ship) then
+			if player:testcollision(ship) then
 				player:dohit(ship.damage*dt)
 				ship:dohit(player.damage*dt)
 			end
@@ -139,7 +139,7 @@ function state:update(dt)
 			-- the entities that come after it.
 			for j=i,#enemies do
 				oship = enemies[j]
-				if ship:testcolision(oship) then
+				if ship:testcollision(oship) then
 					ship:dohit(oship.damage*dt)
 					oship:dohit(ship.damage*dt)
 				end

@@ -104,7 +104,6 @@ function state:draw()
 	love.graphics.draw(GUI_Top,0,0)
 	love.graphics.draw(GUI_BarBack,3,3)
 	HealthBarWidth =  197 / 100 * player_ship.shield
-	print(HealthBarWidth)
 	HealthBarQuad = love.graphics.newQuad(0, 0, HealthBarWidth, 25, 197 , 25)
 	love.graphics.drawq(GUI_GradientBar,HealthBarQuad,3,3)
 end

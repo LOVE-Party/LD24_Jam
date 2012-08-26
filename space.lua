@@ -11,7 +11,7 @@ local grass = love.graphics.newImage("gfx/Grass.png")
 local dirtbottom = love.graphics.newImage("gfx/DirtBottom.png")
 local BKG = love.graphics.newImage("gfx/BKG.png")
 
-local player_ship = Ship.new {
+state.player = Ship.new {
 	texture = spaceship;
 	height = 19;
 	npc = false;
@@ -32,10 +32,10 @@ state.level.width = #state.level.data;
 -- We should only change instance specific things, such as replacing the
 -- ships in the default positions
 function state:enter()
-	-- Reset some player_ship defaults
-	player_ship.posx = 64
-	player_ship.posy = 320
-	player_ship.shield = 100 -- and this
+	-- Reset some player ship defaults
+	self.player.posx = 64
+	self.player.posy = 320
+	self.player.shield = 100 -- and this
 
 	self.level.x = -640
 
@@ -61,7 +61,7 @@ function state:update(dt)
 		level.x = -640
 	end
 
-	player_ship:update(dt, level)
+	self.player:update(dt, level)
 
 	for _, ship in next, self.enemies do
 		ship:update(dt, level)
@@ -69,11 +69,11 @@ function state:update(dt)
 end
 
 function state:keypressed(key)
-	player_ship:keypressed(key)
+	self.player:keypressed(key)
 end
 
 function state:keyreleased(key)
-	player_ship:keyreleased(key)
+	self.player:keyreleased(key)
 end
 
 function state:draw()
@@ -84,7 +84,7 @@ function state:draw()
 
 	self:drawlevel()
 
-	player_ship:draw()
+	self.player:draw()
 
 	for _, ship in next, self.enemies do
 		ship:draw()

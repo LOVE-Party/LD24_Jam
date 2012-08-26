@@ -32,6 +32,14 @@ state.level = {
 }
 state.level.width = #state.level.data;
 
+local HealthBarQuadCache = setmetatable({}, {
+	__index = function(self, n)
+		local quad = love.graphics.newQuad(0, 0, n, 25, 197 , 25)
+		self[n] = quad
+		return quad
+	end;
+})
+
 
 -- Note: state:enter() is called each time we switch to this state (only from
 -- the main menu at the moment) so it is not neccessary to load image files here
@@ -96,12 +104,11 @@ function state:draw()
 		ship:draw()
 	end
 	
-	love.graphics.draw(GUI,0,600 - 120)
+	love.graphics.draw(GUI,0,480)
 	love.graphics.draw(GUI_Top,0,0)
 	love.graphics.draw(GUI_BarBack,3,3)
-	HealthBarWidth =  197 / 100 * self.player.shield
-	HealthBarQuad = love.graphics.newQuad(0, 0, HealthBarWidth, 25, 197 , 25)
-	love.graphics.drawq(GUI_GradientBar,HealthBarQuad,3,3)
+	local HealthBarWidth =  197 / 100 * self.player.shield
+	love.graphics.drawq(GUI_GradientBar, HealthBarQuadCache[HealthBarWidth],3,3)
 end
 
 function state:drawlevel()

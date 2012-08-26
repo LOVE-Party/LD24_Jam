@@ -57,8 +57,14 @@ function state:enter()
 	self.player.posy      = 320
 	self.player.shieldmax = 100 -- and this
 	self.player.shield    = self.player.shieldmax
+	self.timer = 0
 
 	self.level.x = -640
+	self.level.entities = self.enemies
+	self.level.addentity = function(self, ent)
+		assert(e and e._TYPE == 'ship', "Can only add entities")
+		self.entities[#self.entities+1] = ent
+	end
 
 	local enemies = self.enemies
 
@@ -72,11 +78,27 @@ function state:enter()
 	end
 end
 
+function state:addentity(e)
+	assert(e and e._TYPE == 'ship', "Can only add entities")
+	self.enemies[#self.enemies+1] = e
+end
+
 function state:update(dt)
+	self.timer = self.timer + dt
 	local level = state.level
 
 	level.x = level.x + level.scroll_speed * dt
 
+	if self.timer >= 3 then
+		self.timer = self.timer - 10
+		self:addentity(Ship.new{
+			name = string.format("Enemy", i);
+			pos_x = math.random(0, 800/2);
+			pos_y = math.random(0, 600/2);
+			texture = Enemy2;
+			height = 32;
+		})
+	end
 	-- Loop level
 	if level.x > level.width * 32 then
 		level.x = -640
@@ -88,17 +110,21 @@ function state:update(dt)
 	local enemies = self.enemies
 	for i=1,#enemies do
 		ship = enemies[i]
-		ship:update(dt, level)
-		if player:testcolision(ship) then
-			player:dohit(ship.damage*dt)
-			ship:dohit(player.damage*dt)
-		end
-		for j=i,#enemies do
-			oship = enemies[j]
-			if ship:testcolision(oship) then
-				ship:dohit(oship.damage*dt)
-				oship:dohit(ship.damage*dt)
+		if ship then
+			ship:update(dt, level)
+			if player:testcolision(ship) then
+				player:dohit(ship.damage*dt)
+				ship:dohit(player.damage*dt)
 			end
+			for j=i,#enemies do
+				oship = enemies[j]
+				if ship:testcolision(oship) then
+					ship:dohit(oship.damage*dt)
+					oship:dohit(ship.damage*dt)
+				end
+			end
+			if ship.state == 'dead' then
+				table.remove(enemies, i) end
 		end
 	end
 end

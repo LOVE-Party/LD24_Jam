@@ -22,15 +22,14 @@ function ship.new(t)
 	e.damage    = t.damage or e.shieldmax *.3
 	e.state     = t.state or 'alive'
 
-	e.texture = t.texture
-	e.height  = t.height
+	-- Handles the texture, width, and height fields
+	assert(t.texture, "No texture defined")  -- needed for rendering
+	ship.set_texture(e, t.texture)
 	e.radius  = t.radius or e.height
 
 	e.npc = t.npc == nil and true or t.npc
 	e.dir_timer = t.dir_timer or 0
 
-	assert(e.texture, "No texture defined")  -- needed for rendering
-	assert(e.height,  "No height defined")    -- needed for collisions
 	return setmetatable(e, _MT)
 end
 
@@ -144,6 +143,13 @@ end
 -- handles the death of the entity.
 function ship:die()
 	self.state = 'dead'
+end
+
+-- Handles some texture properties
+function ship:set_texture(texture)
+	self.texture = texture
+	self.width   = texture:getWidth()
+	self.height  = texture:getHeight()
 end
 -------------------------------------------------------------------------
 return ship

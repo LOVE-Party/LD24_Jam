@@ -17,6 +17,10 @@ function love.load()
 	dbgfont = love.graphics.newFont(10)
 	love.graphics.setBackgroundColor(50, 50, 50)
 
+	-- apprently we want these globally,
+	-- in which case they belong here, rather than in smain.
+	SCREEN_WIDTH, SCREEN_HEIGHT = love.graphics.getMode()
+
 	--Set Random Seed
 	math.randomseed(os.time());
 	for i=1,3 do math.random() end

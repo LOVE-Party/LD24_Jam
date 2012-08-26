@@ -11,7 +11,17 @@ local grass = love.graphics.newImage("gfx/Grass.png")
 local dirtbottom = love.graphics.newImage("gfx/DirtBottom.png")
 local BKG = love.graphics.newImage("gfx/BKG.png")
 
+<<<<<<< HEAD
 state.player = Ship.new {
+=======
+--GUI
+local GUI = love.graphics.newImage("gfx/GUI.png")
+local GUI_Top = love.graphics.newImage("gfx/GUI_Top.png")
+local GUI_BarBack = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
+local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
+
+local player_ship = Ship.new {
+>>>>>>> Health bar, basic gui setup
 	texture = spaceship;
 	height = 19;
 	npc = false;
@@ -89,6 +99,14 @@ function state:draw()
 	for _, ship in next, self.enemies do
 		ship:draw()
 	end
+	
+	love.graphics.draw(GUI,0,600 - 120)
+	love.graphics.draw(GUI_Top,0,0)
+	love.graphics.draw(GUI_BarBack,3,3)
+	HealthBarWidth =  197 / 100 * player_ship.shield
+	print(HealthBarWidth)
+	HealthBarQuad = love.graphics.newQuad(0, 0, HealthBarWidth, 25, 197 , 25)
+	love.graphics.drawq(GUI_GradientBar,HealthBarQuad,3,3)
 end
 
 function state:drawlevel()

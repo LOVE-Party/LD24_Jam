@@ -75,7 +75,7 @@ function ship:collision(level) -- this is new
 
 			love.audio.play(SFX_Explosion)
 		elseif self.pos_y + self.height > (15 - level.data[CurrentTileX]) * 32 or self.pos_y + self.height > (15 - level.data[CurrentTileX + 1]) * 32 then
-			self.shield = self.shield + 1
+			self.shield = self.shield - 1
 			self.pos_y = self.pos_y - 5
 
 			love.audio.play(SFX_Explosion)

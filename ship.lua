@@ -93,32 +93,29 @@ end
 -- handles various collision related events.
 -- mostly simply handles self Vs. Level terrain collision atm.
 function ship:docollision(level, dt) -- this is new
-	local CurrentTileX = round(self.pos_x / 32 + level.x / 32, 0)
+	-- Keep ship inside play area
+	local posy = self.pos_y
+	posy = posy <= 32 and 32 or posy
+	posy = posy + self.height >= level.height*32 and
+	       level.height*32 - self.height or posy
+	self.pos_y = posy
 
+	local posx = self.pos_x
+	posx = posx <= 0 and 0 or posx
+	posx = posx + self.width >= 800 and 800 - self.width or posx
+	self.pos_x = posx
+
+	local CurrentTileX = round(posx / 32 + level.x / 32, 0)
 	if CurrentTileX > 0 and CurrentTileX < level.width then
 		local testtile = math.max(level.data[CurrentTileX], level.data[CurrentTileX+1])
-		if self.pos_y - self.height < testtile * 32 then
+		if posy - self.height < testtile * 32 then
 			self:dohit(dt*10)
 			self.pos_y = (testtile * 32) + self.height
-		elseif self.pos_y + self.height > (level.height - testtile) * 32 then
-			local ny = 
+		elseif posy + self.height > (level.height - testtile) * 32 then
 			self:dohit(dt*10)
 			self.pos_y = ((level.height - testtile) * 32) - self.height
 		end
 
-		-- TODO: Add test to constrain the ship to height/depth of the *level*
-
-		if self.pos_y + self.height >= SCREEN_HEIGHT-self.height then
-			self.pos_y = SCREEN_HEIGHT-self.height
-		elseif self.pos_y <= self.height then
-			self.pos_y = self.height
-		end
-		
-		if self.pos_x >= SCREEN_WIDTH-self.radius then
-			self.pos_x = SCREEN_WIDTH-self.radius
-		elseif self.pos_x <= self.radius then
-			self.pos_x = self.radius
-		end
 	end
 end
 

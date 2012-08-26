@@ -25,7 +25,6 @@ local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
 
 state.player = Ship.new {name = 'player';
 	texture = spaceship;
-	height = 19;
 	npc = false;
 }
 
@@ -86,7 +85,6 @@ function state:enter()
 			pos_x = math.random(0, 800);
 			pos_y = math.random(0, 600);
 			texture = Enemy2;
-			height = 32;
 		}
 	end
 end
@@ -111,7 +109,6 @@ function state:update(dt)
 			pos_x = math.random(0, 800/2);
 			pos_y = math.random(0, 600/2);
 			texture = Enemy2;
-			height = 32;
 		})
 	end
 	

@@ -68,6 +68,10 @@ function _M:new()
 		['kp4']     = 'left';
 		['kp2']     = 'down';
 		['kp6']     = 'right';
+		['up']	    = 'up';
+		['left']    = 'left';
+		['down']    = 'down';
+		['right']   = 'right';
 	}
 	i._TYPE = 'input'
 	

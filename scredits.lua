@@ -102,6 +102,9 @@ function _M:enter()
 	self.font = love.graphics.newFont(height*0.03) -- main font
 	self.wrap = select(2, self.font:getWrap(self.credits, width)) -- wrap length for the credits
 	self.offset = 0 -- rendering offset for the credits
+
+	self.bg = love.graphics.newImage('gfx/MainMenu_BG.png')
+
 end
 
 --------------------------------------------------------------------------
@@ -111,6 +114,9 @@ function _M:draw()
 	local lt = love.timer
 	
 	lg.setFont(self.font)
+	
+	lg.setColor(255, 255, 255)
+	lg.draw(self.bg,0,0)
 
 	-- The actual credits
 	lg.setColor(COLOR_NORMAL)

@@ -1,12 +1,26 @@
 -------------------------------------------------------------------------
 -- [input.lua]
 -- input
+--
+-- generalised input handling, filtering, and aliasing. notably
+--  multiplexes keyboard and gamepad inputs.
+--
+-- Example:
+-- local handler = input:new()
+-- gamestate gs = Gamestate.new()
+-- handler:install(gs)
+-- handler.aliasmap = {escape='quit'}
+-- function handler:dopress(btn)
+-- 	if btn == 'quit' then love.event.quit() end
+-- end
+--
 -------------------------------------------------------------------------
 local _M = {_NAME = "input", _TYPE = 'module'}
 -------------------------------------------------------------------------
-
+-- instance metatable
 local _MT = {__index = _M}
 
+-- creates (or clones) an instance of an input handler
 function _M:new()
 	local i = {}
 	setmetatable(i, _MT)
@@ -80,6 +94,7 @@ function _M:new()
 	return i
 end
 
+-- installs the handler into a given gamestate (or compatible table)
 function _M:install(t)
 	assert(type(t) == 'table', "Can't install into a non-table")
 	assert(self ~= t, "...why are you trying to install this into itself?")
@@ -96,6 +111,7 @@ function _M:install(t)
 	t.update           = function(s, ...) self:update(...) end
 end
 
+-- handles keyboard keypresses, and multiplexes them to :dopress()
 function _M:keypress(btn)
 	local r = btn and self.keymap[btn]
 	      r = r and self.aliasmap[r]
@@ -104,6 +120,7 @@ function _M:keypress(btn)
 		self:dopress(r) end
 end
 
+-- handles keyboard keyreleases, and multiplexes them to :dorelease()
 function _M:keyrelease(btn)
 	local r = btn and self.keymap[btn]
 	      r = r and self.aliasmap[r]
@@ -112,6 +129,7 @@ function _M:keyrelease(btn)
 		self:dorelease(r) end
 end
 
+-- handles joystick (gamepad) button presses, and multiplexes them to :dopress()
 function _M:joypress(joy, btn)
 	local r = btn and self.joymap[btn]
 	      r = r and self.aliasmap[r]
@@ -120,6 +138,7 @@ function _M:joypress(joy, btn)
 		self:dopress(r) end
 end
 
+-- handles joystick (gamepad) button releases, and multiplexes them to :dorelease()
 function _M:joyrelease(joy, btn)
 	local r = btn and self.joymap[btn]
 	      r = r and self.aliasmap[r]
@@ -128,6 +147,8 @@ function _M:joyrelease(joy, btn)
 		self:dorelease(r) end
 end
 
+-- handles polling and updating for a handler.
+-- notably polls for D-pad events.
 function _M:update(dt)
 	assert(self._TYPE == 'input', "Oops")
 	local lj = love.joystick
@@ -202,20 +223,24 @@ function _M:update(dt)
 
 end
 
+-- instended to be overridden by the handler's creator, handles final input button-press events
 function _M:dopress()
 	assert(self._TYPE == 'input', "Oops")
 
 end
 
+-- instended to be overridden by the handler's creator, handles final input button-release events
 function _M:dorelease()
 	assert(self._TYPE == 'input', "Oops")
 
 end
 
+-- unused
 function _M:mousepress()
 
 end
 
+-- unused
 function _M:mouserelease()
 
 end

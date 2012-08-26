@@ -1,8 +1,10 @@
 local ship = {}
 local _MT = {__index = ship }
 
+-- sound effects, all one of them
 local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
 
+-- creates a new entity
 function ship.new(t)
 	t = t or {}
 	e = {}
@@ -32,10 +34,12 @@ function ship.new(t)
 	return setmetatable(e, _MT)
 end
 
+-- draws the entity
 function ship:draw()
 	love.graphics.draw(self.texture, self.pos_x, self.pos_y)
 end
 
+-- updates the entity according the to time passed (in seconds)
 function ship:update(dt, level)
 	local dv = self.speed * dt
 	self.pos_x = self.pos_x + (self.dir_x * dv)
@@ -54,16 +58,19 @@ function ship:update(dt, level)
 	self:docollision(level, dt)
 end
 
+-- handles keyboard button-down events
 function ship:keypressed(key)
 	self.dir_x = self.dir_x + (key == "right" and 1 or 0) - (key == "left" and 1 or 0)
 	self.dir_y = self.dir_y + (key ==  "down" and 1 or 0) - (key ==   "up" and 1 or 0)
 end
 
+-- handles keyboard button-up events
 function ship:keyreleased(key)
 	self.dir_x = self.dir_x + (key == "right" and -1 or 0) - (key == "left" and -1 or 0)
 	self.dir_y = self.dir_y + (key ==  "down" and -1 or 0) - (key ==   "up" and -1 or 0)
 end
 
+-- rounds a number to the nearest whole number, or to decimal
 local function round(val, decimal)
 	if (decimal) then
 		return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
@@ -72,16 +79,20 @@ local function round(val, decimal)
 	end
 end
 
+-- returns the distance between this entity, and the given entity.
 function ship:distance(e)
 	local a = math.abs(self.pos_x - e.pos_x)^2
 	local b = math.abs(self.pos_y - e.pos_y)^2
 	return math.sqrt(a+b)
 end
 
-function ship:testcolision(e)
+-- tests if this entity, and the given entity, have collided.
+function ship:testcollision(e)
 	return self:distance(e) <= self.radius+e.radius
 end
 
+-- handles various collision related events.
+-- mostly simply handles self Vs. Level terrain collision atm.
 function ship:docollision(level, dt) -- this is new
 	local CurrentTileX = round(self.pos_x / 32 + level.x / 32, 0)
 
@@ -112,6 +123,8 @@ function ship:docollision(level, dt) -- this is new
 	end
 end
 
+-- damages the entity according to the given number, 
+-- and tests / triggers death if appropriate
 function ship:dohit(n)
 	n = n or 1
 
@@ -128,8 +141,9 @@ function ship:dohit(n)
 	return shield
 end
 
+-- handles the death of the entity.
 function ship:die()
 	self.state = 'dead'
 end
-
+-------------------------------------------------------------------------
 return ship

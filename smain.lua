@@ -16,6 +16,7 @@ setmetatable(proxy, _MT)
 Gamestate.main = proxy
 -------------------------------------------------------------------------
 
+-- The list of options availible on the menu, as {title, action} pairs.
 _M.options = {
 	{'Play', function(s) s:startgame()  end };
 	{'Credits', function() Gamestate.switch(Gamestate.credits) end};
@@ -24,11 +25,13 @@ _M.options = {
 
 local width, height = love.graphics.getMode( )
 
+-- colors used to mark availible and selected options
 local COLOR_NORMAL   = {200, 200, 200}
 local COLOR_SELECTED = {255, 255, 255}
 
 _M.selected = 0
 
+-- called by lib.gamestate when switching to this menu.
 function _M:enter()
 	self.time     = 0
 --	self.selected = 0
@@ -53,6 +56,7 @@ function _M:enter()
 	assert(self.update == _M.update, "We failed to restore our update :/")
 end
 
+-- draws the menu
 function _M:draw()
 	local lg = love.graphics
 	local lt = love.timer
@@ -88,17 +92,21 @@ function _M:draw()
 	end
 end
 
+-- updates the menu, and its timer.
 function _M:update(dt)
 	self.time = self.time+dt
 	
 	self.input:update(dt)
 end
 
+-- starts the game (for when that option is selected)
 function _M:startgame()
 	print("begin playing")
 	Gamestate.switch(Gamestate.space)
 end
 
+-- takes events provided by the input handler; changes the current
+-- selection and triggers actions as appropriate
 function _M:dobuttonpress(btn)
 	print("doing press:", btn)
 	local selected = self.selected

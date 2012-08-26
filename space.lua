@@ -1,12 +1,16 @@
+-- requires
 local Gamestate = require "lib.gamestate"
 local Ship      = require "ship"
 
+-- create and register this gamestate
 local state     = Gamestate.new()
 Gamestate.space = state
 
 
 local spaceship  = love.graphics.newImage("gfx/SpaceShip.png")
 local Enemy2     = love.graphics.newImage("gfx/Enemy2.png")
+
+-- Terrain and Background
 local dirt       = love.graphics.newImage("gfx/Dirt.png")
 local grass      = love.graphics.newImage("gfx/Grass.png")
 local dirtbottom = love.graphics.newImage("gfx/DirtBottom.png")
@@ -26,6 +30,7 @@ state.player = Ship.new {name = 'player';
 
 state.enemies = {}
 
+-- level data
 state.level = {name='default'; height = 15; scroll_speed = 50;
 	data = { 
 	0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,3,3,3,3,
@@ -36,10 +41,13 @@ state.level = {name='default'; height = 15; scroll_speed = 50;
 }
 state.level.width = #state.level.data;
 
+
+-- Automatically creates and caches requested widths of the Health/shield
+-- bar, given as a fraction (or whole) of 1
 local HealthBarQuadCache = setmetatable({}, {
 	__index = function(self, n)
-		if n < 0 then return self[0] end
-		if n > 1 then return self[1] end
+		if n < 0 then return self[0] end -- can't have less than none of a bar
+		if n > 1 then return self[1] end -- ...or more than all.
 		local quad = love.graphics.newQuad(0, 0, n*197, 25, 197, 25)
 		rawset(self, n, quad)
 		return quad
@@ -59,16 +67,20 @@ function state:enter()
 	self.player.shield    = self.player.shieldmax
 	self.timer = 0
 
+	-- reset the level
 	self.level.x = -640
+	-- bind enemies/entities to level
+	-- (a preliminary to reorganising to have a separate level class)
 	self.level.entities = self.enemies
+	-- allows easy addition of entities to a level
 	self.level.addentity = function(self, ent)
 		assert(e and e._TYPE == 'ship', "Can only add entities")
 		self.entities[#self.entities+1] = ent
 	end
 
+	-- Populate the world with a few random enemies, for testing.
 	local enemies = self.enemies
-
-	for i = 1, 3 do
+	for i = 1, 5 do
 		enemies[i] = Ship.new {name = string.format("Enemy#%03d", i);
 			pos_x = math.random(0, 800);
 			pos_y = math.random(0, 600);
@@ -78,6 +90,7 @@ function state:enter()
 	end
 end
 
+-- Allows easy addition of Entities to the Level
 function state:addentity(e)
 	assert(e and e._TYPE == 'ship', "Can only add entities")
 	self.enemies[#self.enemies+1] = e
@@ -89,6 +102,7 @@ function state:update(dt)
 
 	level.x = level.x + level.scroll_speed * dt
 
+	-- spawn additional enemies, to keep the level populated.
 	if self.timer >= 3 then
 		self.timer = self.timer - 10
 		self:addentity(Ship.new{
@@ -99,23 +113,30 @@ function state:update(dt)
 			height = 32;
 		})
 	end
+	
 	-- Loop level
 	if level.x > level.width * 32 then
 		level.x = -640
 	end
 
+	-- update the Player entity
 	self.player:update(dt, level)
 
+	-- Loop through all entities, test and act upon any collisions
 	local player, ship, oship = self.player
 	local enemies = self.enemies
 	for i=1,#enemies do
 		ship = enemies[i]
 		if ship then
 			ship:update(dt, level)
+			-- Ideally, the player would be a normal entity, for now we
+			--special-case them
 			if player:testcolision(ship) then
 				player:dohit(ship.damage*dt)
 				ship:dohit(player.damage*dt)
 			end
+			-- with a mutual test, each entity only has to be tested against
+			-- the entities that come after it.
 			for j=i,#enemies do
 				oship = enemies[j]
 				if ship:testcolision(oship) then
@@ -123,6 +144,7 @@ function state:update(dt)
 					oship:dohit(ship.damage*dt)
 				end
 			end
+			-- as a crude hack, we'll simply remove entities that are dead.
 			if ship.state == 'dead' then
 				table.remove(enemies, i) end
 		end
@@ -147,10 +169,12 @@ function state:draw()
 
 	self.player:draw()
 
+	-- Loop over all the Entities, and have them draw themselves.
 	for _, ship in next, self.enemies do
 		ship:draw()
 	end
 	
+	-- draw the gui frame, and healthbar.
 	love.graphics.draw(GUI,0,480)
 	love.graphics.draw(GUI_Top,0,0)
 	love.graphics.draw(GUI_BarBack,3,3)
@@ -173,3 +197,4 @@ function state:drawlevel()
 		end
 	end
 end
+

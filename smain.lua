@@ -37,6 +37,8 @@ function _M:enter()
 	self.logo = love.graphics.newImage('gfx/Logo.png')
 	self.text_img = love.graphics.newImage('gfx/GameName.png')
 	
+	self.bg = love.graphics.newImage('gfx/MainMenu_BG.png')
+	
 	self.input = input:new()
 	self.input:install(self)
 	self.update = _M.update -- restore our update
@@ -56,6 +58,8 @@ function _M:draw()
 	local lt = love.timer
 
 	lg.setFont(self.font)
+	
+	lg.draw(self.bg,0,0)
 	
 	local scale, rot = (math.sin(self.time)*.05)+.95, (self.time / (math.pi*2))
 	lg.draw(self.logo, width/2, height/2, rot, scale, scale, self.logo:getWidth()/2, self.logo:getHeight()/2)

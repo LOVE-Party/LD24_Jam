@@ -1,8 +1,19 @@
+require "lib.gamestate"
+require "weapon"
+
 local ship = {}
 local _MT = {__index = ship }
 
 -- sound effects, all one of them
 local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
+
+-- Handles some texture properties
+local function set_texture(self, texture)
+	self.texture = texture
+	self.width   = texture:getWidth()
+	self.height  = texture:getHeight()
+end
+
 
 -- creates a new entity
 function ship.new(t)
@@ -24,17 +35,26 @@ function ship.new(t)
 
 	-- Handles the texture, width, and height fields
 	assert(t.texture, "No texture defined")  -- needed for rendering
-	ship.set_texture(e, t.texture)
+	set_texture(e, t.texture)
 	e.radius  = t.radius or e.height
 
 	e.npc = t.npc == nil and true or t.npc
 	e.dir_timer = t.dir_timer or 0
+
+	e.entities = t.entities or {}
+	e.shooting = false
+	e.shot_rate = t.shot_rate or 0.2 -- time between shots in seconds.
+	e.shot_timer = 0
 
 	return setmetatable(e, _MT)
 end
 
 -- draws the entity
 function ship:draw()
+	for i, entity in next, self.entities do
+		love.graphics.draw(entity.texture, entity.pos_x, entity.pos_y)
+	end
+
 	love.graphics.draw(self.texture, self.pos_x, self.pos_y)
 end
 
@@ -55,18 +75,46 @@ function ship:update(dt, level)
 	end
 
 	self:docollision(level, dt)
+
+	-- Shoot lazers
+	self.shot_timer = self.shot_timer + dt
+	if self.shooting and self.shot_timer >= self.shot_rate then
+		self.shot_timer = 0
+		self:shoot()
+	end
+	-- Update entities
+	for i, entity in next, self.entities do
+		if entity.type == "bullet" then
+			-- Move bullet bullet
+			entity.pos_x = entity.pos_x + entity.speed * dt
+			-- Remove off-screen bullets
+			if entity.pos_x <= 0 or
+			   entity.pos_x + entity.width >= SCREEN_WIDTH then
+				self.entities[i] = nil
+			end
+			-- Hit things
+			for _, ship in next, Gamestate.space.enemies do
+				if entity:testcollision(ship) then
+					ship:dohit(10)
+					self.entities[i] = nil
+				end
+			end
+		end
+	end
 end
 
 -- handles keyboard button-down events
 function ship:keypressed(key)
 	self.dir_x = self.dir_x + (key == "right" and 1 or 0) - (key == "left" and 1 or 0)
 	self.dir_y = self.dir_y + (key ==  "down" and 1 or 0) - (key ==   "up" and 1 or 0)
+	self.shooting = key == " " or self.shooting
 end
 
 -- handles keyboard button-up events
 function ship:keyreleased(key)
 	self.dir_x = self.dir_x + (key == "right" and -1 or 0) - (key == "left" and -1 or 0)
 	self.dir_y = self.dir_y + (key ==  "down" and -1 or 0) - (key ==   "up" and -1 or 0)
+	self.shooting = key ~= " " and self.shooting
 end
 
 -- rounds a number to the nearest whole number, or to decimal
@@ -142,11 +190,8 @@ function ship:die()
 	self.state = 'dead'
 end
 
--- Handles some texture properties
-function ship:set_texture(texture)
-	self.texture = texture
-	self.width   = texture:getWidth()
-	self.height  = texture:getHeight()
+function ship:shoot()
+	self.entities[#self.entities+1] = Bullet.new(self)
 end
 -------------------------------------------------------------------------
 return ship

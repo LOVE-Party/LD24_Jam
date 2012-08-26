@@ -23,6 +23,10 @@ local GUI_Top         = love.graphics.newImage("gfx/GUI_Top.png")
 local GUI_BarBack     = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
 local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
 
+-- SFX
+state.music = love.audio.newSource("sfx/BGM.ogg")
+state.music:setLooping(true)
+
 state.player = Ship.new {name = 'player';
 	texture = spaceship;
 	npc = false;
@@ -87,6 +91,16 @@ function state:enter()
 			texture = Enemy2;
 		}
 	end
+
+	--  Audio
+	-- Play some music
+	self.music:rewind()
+	self.music:play()
+end
+
+-- Called when switching away from this Gamestate
+function state:leave()
+	self.music:stop()
 end
 
 -- Allows easy addition of Entities to the Level

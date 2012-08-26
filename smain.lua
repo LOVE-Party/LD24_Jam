@@ -3,14 +3,18 @@
 -- smain
 --  Main Menu screen
 -------------------------------------------------------------------------
-local Gamestate = require "lib.gamestate"
+local Gamestate    = require "lib.gamestate"
 local soundmanager = require "lib.soundmanager"
+local input        = require "input"
 
-local _M = Gamestate.new()
-_M._NAME = "smenu"
+local _M   = {_NAME = 'smain', _TYPE='state'}
+local _MT  = {__index = _M}
+local _MMT = {__index = Gamestate.new()}
+local proxy = {}
+setmetatable(_M, _MMT)
+setmetatable(proxy, _MT)
+Gamestate.main = proxy
 -------------------------------------------------------------------------
-
-Gamestate.main = _M
 
 _M.options = {
 	{'Play', function(s) s:startgame()  end };
@@ -18,10 +22,7 @@ _M.options = {
 	{'Exit', function(s) love.event.quit()  end};
 }
 
-
 local width, height = love.graphics.getMode( )
-
-SCREEN_WIDTH, SCREEN_HEIGHT = width, height
 
 local COLOR_NORMAL   = {200, 200, 200}
 local COLOR_SELECTED = {255, 255, 255}
@@ -35,6 +36,19 @@ function _M:enter()
 	self.font_sm  = love.graphics.newFont(height*0.03)
 	self.logo = love.graphics.newImage('gfx/Logo.png')
 	self.text_img = love.graphics.newImage('gfx/GameName.png')
+	
+	self.input = input:new()
+	self.input:install(self)
+	self.update = _M.update -- restore our update
+	self.input.aliasmap = {
+		['enter'] = 'start';
+		[' ']     = 'start';
+		['right'] = 'start';
+		['up']    = 'up';
+		['down']  = 'down';
+	}
+	self.input.dopress = function(s, btn) self:dobuttonpress(btn) end
+	assert(self.update == _M.update, "We failed to restore our update :/")
 end
 
 function _M:draw()
@@ -72,6 +86,8 @@ end
 
 function _M:update(dt)
 	self.time = self.time+dt
+	
+	self.input:update(dt)
 end
 
 function _M:startgame()
@@ -79,21 +95,19 @@ function _M:startgame()
 	Gamestate.switch(Gamestate.space)
 end
 
-
-
-function _M:keypressed(key, unicode)
-	print(string.format("Keypressed: '%s'", key))
+function _M:dobuttonpress(btn)
+	print("doing press:", btn)
 	local selected = self.selected
 	if selected == 0 then
 		selected = 1
 	else
-		if key == 'down' then
+		if btn == 'down' then
 			selected = selected + 1
 			if selected > #self.options then selected = 1 end
-		elseif key == 'up' then
+		elseif btn == 'up' then
 			selected = selected - 1
 			if selected < 1 then selected = #self.options end
-		elseif key == 'enter' or key == 'return' or key == ' ' then
+		elseif btn == 'start' then
 			local option = self.options[self.selected]
 			print(string.format("doing option '%s' [%d] ", tostring(option[1]),selected))
 			option[2](self)
@@ -101,7 +115,6 @@ function _M:keypressed(key, unicode)
 	end
 	self.selected = selected
 end
-
 
 -------------------------------------------------------------------------
 if _VERSION == "Lua 5.1" then _G[_M._NAME] = _M end

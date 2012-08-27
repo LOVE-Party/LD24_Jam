@@ -87,7 +87,7 @@ function ship:update(dt, level)
 			-- Hit things
 			for _, ship in next, Gamestate.space.enemies do
 				if entity:testcollision(ship) then
-					ship:dohit(10)
+					ship:dohit(entity.damage)
 					self.entities[i] = nil
 				end
 			end

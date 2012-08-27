@@ -1,6 +1,7 @@
 Bullet = {
 	speed = 200;
 	radius = 1;
+	damage = 10;
 }
 local MT = {__index = Bullet}
 

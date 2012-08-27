@@ -19,10 +19,11 @@ local BKG        = love.graphics.newImage("gfx/BKG.png")
 local Planet        = love.graphics.newImage("gfx/Planet.png")
 
 --GUI
-local GUI             = love.graphics.newImage("gfx/GUI.png")
-local GUI_Top         = love.graphics.newImage("gfx/GUI_Top.png")
-local GUI_BarBack     = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
-local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
+local GUI               = love.graphics.newImage("gfx/GUI.png")
+local GUI_Top           = love.graphics.newImage("gfx/GUI_Top.png")
+local GUI_BarBack       = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
+local GUI_GradientBar   = love.graphics.newImage("gfx/GUI_GradientBar.png")
+local GUI_Hull_Critical = love.graphics.newImage("gfx/Hull_Critical.png")
 
 -- SFX
 state.music = love.audio.newSource("sfx/BGM.ogg", 'stream') -- long audio files should be streamed
@@ -32,6 +33,8 @@ state.player = Ship.new {name = 'player';
 	texture = spaceship;
 	npc = false;
 }
+
+state.gui_hull_critical_timer = 0
 
 function state.player:die(...)
 	Ship.die(self, ...)
@@ -207,6 +210,12 @@ function state:update(dt)
 			end
 		end
 	end
+
+	-- Flash GUI stuff
+	self.gui_hull_critical_timer = self.gui_hull_critical_timer + dt
+	if self.gui_hull_critical_timer >= 1 then
+		self.gui_hull_critical_timer = 0
+	end
 end
 
 function state:keypressed(key)
@@ -219,6 +228,8 @@ end
 
 function state:draw()
 	local level = self.level
+
+	love.graphics.setColor(255, 255, 255, 255)
 
 	love.graphics.draw(BKG, - level.x / 2 % 800, 0)
 	love.graphics.draw(BKG, - level.x / 2 % 800 - 800, 0)
@@ -240,6 +251,13 @@ function state:draw()
 	love.graphics.draw(GUI_BarBack,3,3)
 	local HealthBarWidth = self.player.shield / self.player.shieldmax
 	love.graphics.drawq(GUI_GradientBar, HealthBarQuadCache[HealthBarWidth],3,3)
+
+	if HealthBarWidth <= 0.2 then
+		if self.gui_hull_critical_timer <= 0.5 then
+			love.graphics.setColor(255, 255, 255, 64)
+		end
+		love.graphics.draw(GUI_Hull_Critical, 32, 490, 0, 1.0, 0.73)
+	end
 end
 
 function state:drawlevel()

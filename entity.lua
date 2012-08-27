@@ -5,9 +5,10 @@
 local _M  = {_NAME = "entity", _TYPE = 'module'}
 local _MT = {__index = _M}
 -------------------------------------------------------------------------
-
 local count = 0
+local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
 
+-------------------------------------------------------------------------
 
 -- Handles some texture properties
 local function set_texture(self, texture)
@@ -76,6 +77,30 @@ end
 
 function _M:draw()
 	love.graphics.draw(self.texture, self.pos_x, self.pos_y)
+end
+
+-- damages the entity according to the given number, 
+-- and tests / triggers death if appropriate
+function _M:dohit(n)
+	n = n or 1
+
+	local shield = self.shield - n
+	shield = shield >= 0 and shield or 0
+	shield = shield <= self.shieldmax and shield or self.shieldmax
+	self.shield = shield
+	love.audio.play(SFX_Explosion) -- shouldn't this be using the soundmanager?
+
+	if shield == 0 and self.state ~= 'dead'then
+		self:die()
+	end
+
+	return shield
+end
+
+-- handles the death of the entity.
+function _M:die()
+	self.state = 'dead'
+	self.shooting = false
 end
 
 -------------------------------------------------------------------------

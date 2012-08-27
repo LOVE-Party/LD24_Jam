@@ -46,12 +46,7 @@ function ship:draw()
 	entity.draw(self)
 end
 
--- updates the entity according the to time passed (in seconds)
-function ship:update(dt, level)
-	local dv = self.speed * dt
-	self.pos_x = self.pos_x + (self.dir_x * dv)
-	self.pos_y = self.pos_y + (self.dir_y * dv)
-
+function ship:think(dt)
 	if self.npc then
 		self.dir_timer = self.dir_timer + dt
 		-- turn change directions
@@ -61,8 +56,17 @@ function ship:update(dt, level)
 			self.dir_y = math.random(-1, 1)
 		end
 	end
+end
+
+-- updates the entity according the to time passed (in seconds)
+function ship:update(dt, level)
+	local dv = self.speed * dt
+	self.pos_x = self.pos_x + (self.dir_x * dv)
+	self.pos_y = self.pos_y + (self.dir_y * dv)
 
 	self:docollision(level, dt)
+
+	self:think(dt)
 
 	-- Shoot lazers
 	self.shot_timer = self.shot_timer + dt
@@ -145,30 +149,6 @@ function ship:docollision(level, dt) -- this is new
 		end
 
 	end
-end
-
--- damages the entity according to the given number, 
--- and tests / triggers death if appropriate
-function ship:dohit(n)
-	n = n or 1
-
-	local shield = self.shield - n
-	shield = shield >= 0 and shield or 0
-	shield = shield <= self.shieldmax and shield or self.shieldmax
-	self.shield = shield
-	love.audio.play(SFX_Explosion) -- shouldn't this be using the soundmanager?
-
-	if shield == 0 and self.state ~= 'dead'then
-		self:die()
-	end
-
-	return shield
-end
-
--- handles the death of the entity.
-function ship:die()
-	self.state = 'dead'
-	self.shooting = false
 end
 
 function ship:shoot()

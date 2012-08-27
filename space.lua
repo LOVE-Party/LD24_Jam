@@ -24,7 +24,7 @@ local GUI_BarBack     = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
 local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
 
 -- SFX
-state.music = love.audio.newSource("sfx/BGM.ogg", 'stream')
+state.music = love.audio.newSource("sfx/BGM.ogg", 'stream') -- long audio files should be streamed
 state.music:setLooping(true)
 
 state.player = Ship.new {name = 'player';
@@ -49,7 +49,13 @@ state.level = {name='default'; height = 15; scroll_speed = 50;
 	1,1,1,1,1,1,1,1,1,5,6,5,6,5,6,5,6,5,1,1,1,1,1,1,1,1,2,3,4,3,2,3,2,3,4,
 	5,5,5,5,5,4,3,2,1,0};
 	x = -640;
+	entities = {};
 }
+-- allows easy addition of entities to a level
+self.level.addentity = function(self, ent)
+	assert(ent and ent._TYPE == 'entity', "Can only add entities")
+	self.entities[#self.entities+1] = ent
+end
 state.level.width = #state.level.data;
 
 
@@ -84,11 +90,6 @@ function state:enter()
 	-- bind enemies/entities to level
 	-- (a preliminary to reorganising to have a separate level class)
 	self.level.entities = self.enemies
-	-- allows easy addition of entities to a level
-	self.level.addentity = function(self, ent)
-		assert(ent and ent._TYPE == 'entity', "Can only add entities")
-		self.entities[#self.entities+1] = ent
-	end
 
 	-- Populate the world with a few random enemies, for testing.
 	local enemies = self.enemies
@@ -101,7 +102,7 @@ function state:enter()
 	end
 	
 	for x = 1, #self.level.data do
-	self.level.data[x] = math.random(6)
+		self.level.data[x] = math.random(6)
 	end
 
 	--  Audio

@@ -11,12 +11,13 @@ local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
 -------------------------------------------------------------------------
 
 -- Handles some texture properties
-local function set_texture(self, texture)
+function _M.set_texture(self, texture)
 	self.texture = texture
 	self.width   = texture:getWidth()
 	self.height  = texture:getHeight()
 end
 
+local generic_icon = love.graphics.newImage("gfx/AutoTurret.png")
 -------------------------------------------------------------------------
 
 function _M.new(t)
@@ -37,10 +38,8 @@ function _M.new(t)
 	e.damage = t.damage or 0
 	e.radius = t.radius or 0
 	
-
 	-- Handles the texture, width, and height fields
-	assert(t.texture, "No texture defined")  -- needed for rendering
-	set_texture(e, t.texture)
+	_M.set_texture(e, t.texture or generic_icon)
 
 	count = count + 1
 
@@ -57,8 +56,8 @@ end
 
 function _M:update(dt)
 	local dv = self.speed * dt
-	self.x = self.x + (self.dir_x * dv)
-	self.y = self.y + (self.dir_y * dv)
+	self.pos_x = self.pos_x + (self.dir_x * dv)
+	self.pos_y = self.pos_y + (self.dir_y * dv)
 	
 	self:think(dt)
 end
@@ -83,6 +82,7 @@ end
 -- and tests / triggers death if appropriate
 function _M:dohit(n)
 	n = n or 1
+	assert(n > 0, "Cannot hurt for negative damage")
 
 	local shield = self.shield - n
 	shield = shield >= 0 and shield or 0
@@ -103,6 +103,21 @@ function _M:die()
 	self.shooting = false
 	self.dir_x = 0
 	self.dir_y = 0
+end
+
+function _M:heal(n)
+	n = n or 1
+	assert(n > 0, "Cannot heal for negative health")
+
+	local shield = self.shield
+	shield = shield + n
+	shield = shield >= 0 and shield or 0
+	shield = shield <= self.shieldmax and shield or self.shieldmax
+	self.shield = shield
+end
+
+function _M:collidewith(e, dt)
+
 end
 
 -------------------------------------------------------------------------

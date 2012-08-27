@@ -1,6 +1,7 @@
 -- requires
 local Gamestate = require "lib.gamestate"
 local Ship      = require "ship"
+local powerup   = require "powerup"
 
 -- create and register this gamestate
 local state     = Gamestate.new()
@@ -34,9 +35,11 @@ state.player = Ship.new {name = 'player';
 
 function state.player:die(...)
 	Ship.die(self, ...)
+
 	state.endtimer = 3
 	state.endtype = 'death'
 	state.music:stop()
+	state.level.scrolling = false
 end
 
 state.enemies = {}
@@ -80,10 +83,12 @@ function state:enter()
 	-- Reset some player ship defaults
 	self.player.pos_x      = 64
 	self.player.pos_y      = 320
-	self.player.shieldmax = 100 -- and this
-	self.player.shield    = self.player.shieldmax
+	self.player.shieldmax  = 100 -- and this
+	self.player.shield     = self.player.shieldmax
+	self.player.state      = 'alive'
 	self.timer = 0
 	self.endtimer = false
+	self.level.scrolling = true
 
 	-- reset the level
 	self.level.x = -800
@@ -144,15 +149,24 @@ function state:update(dt)
 		self.timer = 0
 		self:addentity(Ship.new{
 			name = string.format("Enemy#%03d", #self.enemies);
-			pos_x = math.random(0, 800/2);
-			pos_y = math.random(0, 600/2);
+			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
+			pos_y = math.random(0, SCREEN_HEIGHT);
 			texture = Enemy2;
+		})
+		self:addentity(powerup.new{
+			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
+			pos_y = math.random(0, SCREEN_HEIGHT);
 		})
 	end
 	
 	-- Loop level
 	if level.x > level.width * 32 then
 		level.x = -800
+
+		self:addentity(powerup.new{
+			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
+			pos_y = math.random(0, SCREEN_HEIGHT);
+		})
 	end
 	
 	--Randomize tile when you are past it
@@ -175,16 +189,16 @@ function state:update(dt)
 			-- Ideally, the player would be a normal entity, for now we
 			--special-case them
 			if player:testcollision(ship) then
-				player:dohit(ship.damage*dt)
-				ship:dohit(player.damage*dt)
+				player:collidewith(ship, dt)
+				ship:collidewith(player, dt)
 			end
 			-- with a mutual test, each entity only has to be tested against
 			-- the entities that come after it.
 			for j=i+1,#enemies do
 				oship = enemies[j]
 				if ship:testcollision(oship) then
-					ship:dohit(oship.damage*dt)
-					oship:dohit(ship.damage*dt)
+					ship:collidewith(ship, dt)
+					oship:collidewith(player, dt)
 				end
 			end
 			-- as a crude hack, we'll simply remove entities that are dead.

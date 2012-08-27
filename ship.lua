@@ -154,14 +154,17 @@ end
 -- handles the death of the entity.
 function ship:die()
 	entity.die(self)
-
-	if not self.npc then
-		Gamestate.space.level.scrolling = false
-	end
 end
 
 function ship:shoot()
 	self.entities[#self.entities+1] = Bullet.new(self)
 end
+
+function ship:collidewith(e, dt)
+	if e.kind == 'ship' then
+		self:dohit(e.damage*dt)
+	end
+end
+
 -------------------------------------------------------------------------
 return ship

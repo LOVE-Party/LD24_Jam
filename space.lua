@@ -42,8 +42,8 @@ end
 state.enemies = {}
 
 -- level data
-state.level = {name='default'; height = 15; scroll_speed = 50;
-	data = { 
+state.level = {name='default'; height = 15; scroll_speed = 50; scrolling = true;
+	data = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,3,3,3,3,
 	3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,5,4,3,2,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,
 	1,1,1,1,1,1,1,1,1,5,6,5,6,5,6,5,6,5,1,1,1,1,1,1,1,1,2,3,4,3,2,3,2,3,4,
@@ -134,7 +134,9 @@ function state:update(dt)
 		end
 	end
 
-	level.x = level.x + level.scroll_speed * dt
+	if level.scrolling then
+		level.x = level.x + level.scroll_speed * dt
+	end
 
 	-- spawn additional enemies, to keep the level populated.
 	if self.timer >= 3 then

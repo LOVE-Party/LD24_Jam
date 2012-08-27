@@ -169,6 +169,12 @@ end
 function ship:die()
 	self.state = 'dead'
 	self.shooting = false
+	self.dir_x = 0
+	self.dir_y = 0
+
+	if not self.npc then
+		Gamestate.space.level.scrolling = false
+	end
 end
 
 function ship:shoot()

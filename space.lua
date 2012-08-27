@@ -24,6 +24,7 @@ local GUI_Top           = love.graphics.newImage("gfx/GUI_Top.png")
 local GUI_BarBack       = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
 local GUI_GradientBar   = love.graphics.newImage("gfx/GUI_GradientBar.png")
 local GUI_Hull_Critical = love.graphics.newImage("gfx/Hull_Critical.png")
+local GUI_ScoreBar      = love.graphics.newImage("gfx/GUI_ScoreBar.png")
 
 -- SFX
 state.music = love.audio.newSource("sfx/BGM.ogg", 'stream') -- long audio files should be streamed
@@ -64,6 +65,8 @@ state.level.addentity = function(self, ent)
 end
 state.level.width = #state.level.data;
 
+state.score = 0
+local score_font = love.graphics.newFont(32)
 
 -- Automatically creates and caches requested widths of the Health/shield
 -- bar, given as a fraction (or whole) of 1
@@ -216,6 +219,11 @@ function state:update(dt)
 	if self.gui_hull_critical_timer >= 1 then
 		self.gui_hull_critical_timer = 0
 	end
+
+	-- Add to score
+	if self.player.state ~= "dead" then
+		self.score = self.score + 2*dt
+	end
 end
 
 function state:keypressed(key)
@@ -258,6 +266,12 @@ function state:draw()
 		end
 		love.graphics.draw(GUI_Hull_Critical, 32, 490, 0, 1.0, 0.73)
 	end
+
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.draw(GUI_ScoreBar, 485, 500, 0, 1.5, 1.5)
+	love.graphics.setFont(score_font)
+	love.graphics.setColor(0, 255, 0)
+	love.graphics.print(("Score: %08d"):format(self.score), 500, 500)
 end
 
 function state:drawlevel()

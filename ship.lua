@@ -33,6 +33,7 @@ function ship.new(t)
 	e.shooting   = false
 	e.shot_rate  = t.shot_rate or 0.2 -- time between shots in seconds.
 	e.shot_timer = 0
+	e.hit = false   -- was hit by player?
 
 	return setmetatable(e, _MT)
 end
@@ -88,6 +89,7 @@ function ship:update(dt, level)
 			for _, ship in next, Gamestate.space.enemies do
 				if entity:testcollision(ship) then
 					ship:dohit(entity.damage)
+					ship.hit = true
 					self.entities[i] = nil
 				end
 			end
@@ -129,7 +131,7 @@ function ship:docollision(level, dt) -- this is new
 	local posy = self.pos_y
 	posy = posy <= 32 and 32 or posy
 	posy = posy + self.height >= level.height*32 and
-	       level.height*32 - self.height or posy
+	level.height*32 - self.height or posy
 	self.pos_y = posy
 
 	local posx = self.pos_x
@@ -154,6 +156,12 @@ end
 -- handles the death of the entity.
 function ship:die()
 	entity.die(self)
+
+	if self.npc then
+		if self.hit then    -- Was the NPC hit by the player?
+			Gamestate.space.score = Gamestate.space.score + 25
+		end
+	end
 end
 
 function ship:shoot()

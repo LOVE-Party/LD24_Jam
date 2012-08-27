@@ -50,7 +50,7 @@ end
 function _M:settype(kind)
 	print('setting mission over kind', kind)
 	if kind == 'fail' then
-		self.message = "You died horribly.\nWhy are you playing this?"
+		self.message = ("You died horribly.\nYour score: %08d"):format(Gamestate.space.score)
 	elseif kind == 'win' then
 		error "The only winning move is not to play."
 	else -- unknown kind

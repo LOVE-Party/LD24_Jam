@@ -52,7 +52,7 @@ state.level = {name='default'; height = 15; scroll_speed = 50; scrolling = true;
 	entities = {};
 }
 -- allows easy addition of entities to a level
-self.level.addentity = function(self, ent)
+state.level.addentity = function(self, ent)
 	assert(ent and ent._TYPE == 'entity', "Can only add entities")
 	self.entities[#self.entities+1] = ent
 end

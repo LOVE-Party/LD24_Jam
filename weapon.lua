@@ -39,3 +39,5 @@ end
 function Bullet:testcollision(e)
 	return self:distance(e) <= self.radius+e.radius
 end
+
+return Bullet

@@ -1,51 +1,37 @@
-require "lib.gamestate"
-require "weapon"
+local Gamestate = require "lib.gamestate"
+local Bullet = require "weapon"
+local entity = require "entity"
 
-local ship = {}
-local _MT = {__index = ship }
+local _M   = {} -- Module
+local _MT  = {__index = _M } -- Metatable
+local _MMT = {__index = entity} -- Module Metatable
+local ship = setmetatable(_M, _MMT)
 
 -- sound effects, all one of them
 local SFX_Explosion = love.audio.newSource("sfx/Explosion.wav", "static")
 
--- Handles some texture properties
-local function set_texture(self, texture)
-	self.texture = texture
-	self.width   = texture:getWidth()
-	self.height  = texture:getHeight()
-end
-
-
 -- creates a new entity
 function ship.new(t)
 	t = t or {}
-	local e = {}
+	local e = entity.new(t)
 	
-	e._TYPE = 'ship'
-	e.pos_x = t.pos_x or 0
-	e.pos_y = t.pos_y or 0
-	e.dir_x = t.dir_x or 0
-	e.dir_y = t.dir_y or 0
+	e.kind      = 'ship'
 
-	e.name      = t.name or 'ship'
+	e.name      = t.name or string.format('ship#%d', e.id)
 	e.shieldmax = t.shieldmax or 100
-	e.shield    = t.shield or e.shieldmax
-	e.speed     = t.speed or 100
-	e.damage    = t.damage or e.shieldmax *.3
-	e.state     = t.state or 'alive'
-	print(e.state)
-	assert(type(e.state) == 'string', "er, didn't we just ste this?")
+	e.shield    = t.shield    or e.shieldmax
+	e.speed     = t.speed     or 100
+	e.damage    = t.damage    or e.shieldmax *.3
+	e.state     = t.state     or 'alive'
 
-	-- Handles the texture, width, and height fields
-	assert(t.texture, "No texture defined")  -- needed for rendering
-	set_texture(e, t.texture)
 	e.radius  = t.radius or e.height
 
-	e.npc = t.npc == nil and true or t.npc
+	e.npc       = t.npc == nil and true or t.npc
 	e.dir_timer = t.dir_timer or 0
 
-	e.entities = t.entities or {}
-	e.shooting = false
-	e.shot_rate = t.shot_rate or 0.2 -- time between shots in seconds.
+	e.entities   = t.entities or {}
+	e.shooting   = false
+	e.shot_rate  = t.shot_rate or 0.2 -- time between shots in seconds.
 	e.shot_timer = 0
 
 	return setmetatable(e, _MT)
@@ -57,7 +43,7 @@ function ship:draw()
 		love.graphics.draw(entity.texture, entity.pos_x, entity.pos_y)
 	end
 
-	love.graphics.draw(self.texture, self.pos_x, self.pos_y)
+	entity.draw(self)
 end
 
 -- updates the entity according the to time passed (in seconds)
@@ -130,18 +116,6 @@ local function round(val, decimal)
 	else
 		return math.floor(val+0.5)
 	end
-end
-
--- returns the distance between this entity, and the given entity.
-function ship:distance(e)
-	local a = math.abs(self.pos_x - e.pos_x)^2
-	local b = math.abs(self.pos_y - e.pos_y)^2
-	return math.sqrt(a+b)
-end
-
--- tests if this entity, and the given entity, have collided.
-function ship:testcollision(e)
-	return self:distance(e) <= self.radius+e.radius
 end
 
 -- handles various collision related events.

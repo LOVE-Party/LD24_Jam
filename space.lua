@@ -86,7 +86,7 @@ function state:enter()
 	self.level.entities = self.enemies
 	-- allows easy addition of entities to a level
 	self.level.addentity = function(self, ent)
-		assert(ent and ent._TYPE == 'ship', "Can only add entities")
+		assert(ent and ent._TYPE == 'entity', "Can only add entities")
 		self.entities[#self.entities+1] = ent
 	end
 
@@ -113,7 +113,7 @@ end
 
 -- Allows easy addition of Entities to the Level
 function state:addentity(e)
-	assert(e and e._TYPE == 'ship', "Can only add entities")
+	assert(e and e._TYPE == 'entity', "Can only add entities")
 	self.enemies[#self.enemies+1] = e
 end
 

@@ -80,7 +80,7 @@ function state:enter()
 	self.endtimer = false
 
 	-- reset the level
-	self.level.x = -640
+	self.level.x = -800
 	-- bind enemies/entities to level
 	-- (a preliminary to reorganising to have a separate level class)
 	self.level.entities = self.enemies
@@ -98,6 +98,10 @@ function state:enter()
 			pos_y = math.random(0, 600);
 			texture = Enemy2;
 		}
+	end
+	
+	for x = 1, #self.level.data do
+	self.level.data[x] = math.random(6)
 	end
 
 	--  Audio
@@ -145,8 +149,15 @@ function state:update(dt)
 	
 	-- Loop level
 	if level.x > level.width * 32 then
-		level.x = -640
+		level.x = -800
 	end
+	
+	--Randomize tile when you are past it
+	if level.x / 32 > 15 and level.x / 32 < #self.level.data + 15 then
+		self.level.data[math.floor((level.x / 32) - 15)] = math.random(6)
+	end
+	
+	
 
 	-- update the Player entity
 	self.player:update(dt, level)

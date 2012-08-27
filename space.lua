@@ -24,13 +24,20 @@ local GUI_BarBack     = love.graphics.newImage("gfx/GUI_EmbossedBar.png")
 local GUI_GradientBar = love.graphics.newImage("gfx/GUI_GradientBar.png")
 
 -- SFX
-state.music = love.audio.newSource("sfx/BGM.ogg")
+state.music = love.audio.newSource("sfx/BGM.ogg", 'stream')
 state.music:setLooping(true)
 
 state.player = Ship.new {name = 'player';
 	texture = spaceship;
 	npc = false;
 }
+
+function state.player:die(...)
+	Ship.die(self, ...)
+	state.endtimer = 3
+	state.endtype = 'death'
+	state.music:stop()
+end
 
 state.enemies = {}
 
@@ -70,6 +77,7 @@ function state:enter()
 	self.player.shieldmax = 100 -- and this
 	self.player.shield    = self.player.shieldmax
 	self.timer = 0
+	self.endtimer = false
 
 	-- reset the level
 	self.level.x = -640
@@ -112,6 +120,15 @@ end
 function state:update(dt)
 	self.timer = self.timer + dt
 	local level = state.level
+
+	if self.endtimer and self.endtimer > 0 then
+		print(string.format("End timer (%fs)", self.endtimer))
+		self.endtimer = self.endtimer - dt
+		if self.endtimer <= 0 then
+			assert(self.endtype, "We don't have an endgame kind")
+			self:endgame(self.endtype)
+		end
+	end
 
 	level.x = level.x + level.scroll_speed * dt
 
@@ -213,3 +230,15 @@ function state:drawlevel()
 	end
 end
 
+
+function state:endgame(kind)
+	assert(kind, "Cant end the game with no end kind!")
+	print("endgame kind", kind)
+	if kind == 'death' or kind == 'fail' then
+		Gamestate.missionover:settype('fail')
+		Gamestate.switch(Gamestate.missionover)
+	else
+		Gamestate.missionover:settype('other')
+		Gamestate.switch(Gamestate.missionover)
+	end
+end

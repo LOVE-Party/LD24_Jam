@@ -32,6 +32,8 @@ function ship.new(t)
 	e.speed     = t.speed or 100
 	e.damage    = t.damage or e.shieldmax *.3
 	e.state     = t.state or 'alive'
+	print(e.state)
+	assert(type(e.state) == 'string', "er, didn't we just ste this?")
 
 	-- Handles the texture, width, and height fields
 	assert(t.texture, "No texture defined")  -- needed for rendering
@@ -105,16 +107,20 @@ end
 
 -- handles keyboard button-down events
 function ship:keypressed(key)
-	self.dir_x = self.dir_x + (key == "right" and 1 or 0) - (key == "left" and 1 or 0)
-	self.dir_y = self.dir_y + (key ==  "down" and 1 or 0) - (key ==   "up" and 1 or 0)
-	self.shooting = key == " " or self.shooting
+	if self.state == 'alive' then
+		self.dir_x = self.dir_x + (key == "right" and 1 or 0) - (key == "left" and 1 or 0)
+		self.dir_y = self.dir_y + (key ==  "down" and 1 or 0) - (key ==   "up" and 1 or 0)
+		self.shooting = key == " " or self.shooting
+	end
 end
 
 -- handles keyboard button-up events
 function ship:keyreleased(key)
-	self.dir_x = self.dir_x + (key == "right" and -1 or 0) - (key == "left" and -1 or 0)
-	self.dir_y = self.dir_y + (key ==  "down" and -1 or 0) - (key ==   "up" and -1 or 0)
-	self.shooting = key ~= " " and self.shooting
+	if self.state == 'alive' then
+		self.dir_x = self.dir_x + (key == "right" and -1 or 0) - (key == "left" and -1 or 0)
+		self.dir_y = self.dir_y + (key ==  "down" and -1 or 0) - (key ==   "up" and -1 or 0)
+		self.shooting = key ~= " " and self.shooting
+	end
 end
 
 -- rounds a number to the nearest whole number, or to decimal
@@ -188,6 +194,7 @@ end
 -- handles the death of the entity.
 function ship:die()
 	self.state = 'dead'
+	self.shooting = false
 end
 
 function ship:shoot()

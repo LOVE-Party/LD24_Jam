@@ -151,6 +151,15 @@ function ship:docollision(level, dt) -- this is new
 	end
 end
 
+-- handles the death of the entity.
+function ship:die()
+	entity.die(self)
+
+	if not self.npc then
+		Gamestate.space.level.scrolling = false
+	end
+end
+
 function ship:shoot()
 	self.entities[#self.entities+1] = Bullet.new(self)
 end

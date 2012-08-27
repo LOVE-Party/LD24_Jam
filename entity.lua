@@ -101,6 +101,8 @@ end
 function _M:die()
 	self.state = 'dead'
 	self.shooting = false
+	self.dir_x = 0
+	self.dir_y = 0
 end
 
 -------------------------------------------------------------------------

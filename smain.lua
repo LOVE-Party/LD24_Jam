@@ -7,6 +7,9 @@ local Gamestate    = require "lib.gamestate"
 local soundmanager = require "lib.soundmanager"
 local input        = require "input"
 
+local music = love.audio.newSource("sfx/main_theme.ogg", 'stream') -- long audio files should be streamed
+music:setLooping(true)
+
 local _M   = {_NAME = 'smain', _TYPE='state'}
 local _MT  = {__index = _M}
 local _MMT = {__index = Gamestate.new()}
@@ -40,6 +43,9 @@ function _M:enter()
 	self.font_sm  = love.graphics.newFont(height*0.03)
 	self.logo = love.graphics.newImage('gfx/Logo.png')
 	self.text_img = love.graphics.newImage('gfx/GameName.png')
+	
+	music:rewind()
+	music:play()
 	
 	self.bg = love.graphics.newImage('gfx/MainMenu_BG.png')
 	
@@ -124,6 +130,7 @@ function _M:dobuttonpress(btn)
 			local option = self.options[self.selected]
 			print(string.format("doing option '%s' [%d] ", tostring(option[1]),selected))
 			option[2](self)
+			music:stop()
 		end
 	end
 	self.selected = selected

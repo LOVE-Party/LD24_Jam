@@ -50,6 +50,7 @@ function _M:dohit()
 end
 
 function _M:doeffect(e)
+	assert(e, "Can't effect nothing")
 	if self.effect == 'heal10' then
 		e:heal(e.shieldmax*.1)
 	elseif self.effect == 'heal30' then
@@ -65,6 +66,7 @@ function _M:doeffect(e)
 end
 
 function _M:collidewith(e, dt)
+	assert(e, "Can't collide with nothing")
 	self:doeffect(e)
 	self:dohit()
 end

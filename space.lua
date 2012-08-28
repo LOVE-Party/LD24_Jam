@@ -190,6 +190,7 @@ function state:update(dt)
 	local enemies = self.enemies
 	for i=1,#enemies do
 		ship = enemies[i]
+		assert(ship, "Woops, grabbed nothing.")
 		if ship then
 			ship:update(dt, level)
 			-- Ideally, the player would be a normal entity, for now we

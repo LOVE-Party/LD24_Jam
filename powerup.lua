@@ -26,7 +26,11 @@ function _M.new(t)
 	p.kind = 'powerup'
 
 	p.faction = t.faction or 'player'
-	p.effect = t.effect or 'heal10'
+	p.effect  = t.effect or 'heal10'
+	p.dir_x   = -1
+	p.dir_y   = 0
+	p.speed   = 50
+
 
 	_M.set_texture(p, icons[p.effect])
 

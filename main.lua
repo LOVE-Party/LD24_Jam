@@ -13,6 +13,7 @@ function love.load()
 	require "intro"
 	require "smain"
 	require "scredits"
+	require "sstory"
 	require "smissionover"
 
 	io.stdout:setvbuf("line")

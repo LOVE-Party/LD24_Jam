@@ -19,6 +19,7 @@ Gamestate.main = proxy
 -- The list of options availible on the menu, as {title, action} pairs.
 _M.options = {
 	{'Play', function(s) s:startgame()  end };
+	{'Story', function() Gamestate.switch(Gamestate.story) end};
 	{'Credits', function() Gamestate.switch(Gamestate.credits) end};
 	{'Exit', function(s) love.event.quit()  end};
 }

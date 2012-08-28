@@ -120,7 +120,7 @@ function state:enter()
 	
 	for x = 1, #self.level.data do
 		self.level.data[x] = math.random(5)
-		self.level.offset[x] = math.floor(math.sin(x / 8) * 4)
+		self.level.offset[x] = math.floor(math.sin(x / 8) * 3)
 	end
 
 	--  Audio
@@ -191,8 +191,8 @@ function state:update(dt)
 	
 	--Randomize tile when you are past it
 	if level.x / 32 > 15 and level.x / 32 < #self.level.data + 15 then
-		self.level.data[math.floor((level.x / 32) - 15)] = math.random(6)
-		self.level.offset[math.floor((level.x / 32) - 15)] = math.floor(math.sin(math.floor((level.x / 32) - 15) / (8 - (level.loop_counter % 4))) * 4)
+		self.level.data[math.floor((level.x / 32) - 15)] = math.random(5)
+		self.level.offset[math.floor((level.x / 32) - 15)] = math.floor(math.sin(math.floor((level.x / 32) - 15) / (8 - (level.loop_counter % 4))) * 3)
 	end
 	
 	

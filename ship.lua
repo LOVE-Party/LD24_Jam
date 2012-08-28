@@ -22,7 +22,10 @@ function ship.new(t)
 
 	e.npc        = (t.npc == nil and true) or t.npc
 	e.dir_timer  = t.dir_timer or 0
-	e.entities   = t.entities  or {}
+	e.entities   = {}
+	for k, v in pairs(t.entities or {}) do
+		e.entities[k] = v.new(v)
+	end
 	e.hit        = false   -- was hit by player?
 
 	e.shooting   = false

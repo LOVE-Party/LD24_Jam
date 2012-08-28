@@ -34,8 +34,12 @@ end
 
 -- draws the entity
 function ship:draw()
-	for i, entity in next, self.entities do
-		love.graphics.draw(entity.texture, entity.pos_x, entity.pos_y)
+	assert(self, "We have no self, so I really don't know how you expect this to work.")
+	for i, e in next, self.entities do
+		assert(e, "Entity doesn't seem to actually exist")
+		assert(e._TYPE == 'entity', string.format("'Entity' is actually an '%s'", e._TYPE or type(e)))
+		e:draw()
+		--love.graphics.draw(e.texture, e.pos_x, e.pos_y)
 	end
 
 	entity.draw(self)
@@ -159,7 +163,9 @@ function ship:die()
 end
 
 function ship:addentity(e)
-	self.entities[#self.entities+1] = e
+	if e then
+		self.entities[#self.entities+1] = e
+	end
 end
 
 function ship:shoot()

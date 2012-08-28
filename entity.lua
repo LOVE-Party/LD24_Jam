@@ -82,6 +82,8 @@ function _M:testcollision(e)
 end
 
 function _M:draw()
+	assert(self, "We have no self, so I really don't know how you expect this to work.")
+
 	local tau = math.pi*2
 	local hpratio = self.shield / self.shieldmax
 	local lg = love.graphics

@@ -235,14 +235,15 @@ function state:keyreleased(key)
 end
 
 function state:draw()
+	local lg = love.graphics
 	local level = self.level
 
-	love.graphics.setColor(255, 255, 255, 255)
+	lg.setColor(255, 255, 255)
 
-	love.graphics.draw(BKG, - level.x / 2 % 800, 0)
-	love.graphics.draw(BKG, - level.x / 2 % 800 - 800, 0)
+	lg.draw(BKG, - level.x / 2 % 800, 0)
+	lg.draw(BKG, - level.x / 2 % 800 - 800, 0)
 	
-	love.graphics.draw(Planet, - level.x / 1.5 % 1600 - 128, 200)
+	lg.draw(Planet, - level.x / 1.5 % 1600 - 128, 200)
 	
 	self:drawlevel()
 
@@ -254,24 +255,25 @@ function state:draw()
 	end
 	
 	-- draw the gui frame, and healthbar.
-	love.graphics.draw(GUI,0,480)
-	love.graphics.draw(GUI_Top,0,0)
-	love.graphics.draw(GUI_BarBack,3,3)
+	lg.setColor(255,255,255)
+	lg.draw(GUI,0,480)
+	lg.draw(GUI_Top,0,0)
+	lg.draw(GUI_BarBack,3,3)
 	local HealthBarWidth = self.player.shield / self.player.shieldmax
-	love.graphics.drawq(GUI_GradientBar, HealthBarQuadCache[HealthBarWidth],3,3)
+	lg.drawq(GUI_GradientBar, HealthBarQuadCache[HealthBarWidth],3,3)
 
 	if HealthBarWidth <= 0.2 then
 		if self.gui_hull_critical_timer <= 0.5 then
 			love.graphics.setColor(255, 255, 255, 64)
 		end
-		love.graphics.draw(GUI_Hull_Critical, 32, 490, 0, 1.0, 0.73)
+		lg.draw(GUI_Hull_Critical, 32, 490, 0, 1.0, 0.73)
 	end
 
-	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.draw(GUI_ScoreBar, 485, 500, 0, 1.5, 1.5)
-	love.graphics.setFont(score_font)
-	love.graphics.setColor(0, 255, 0)
-	love.graphics.print(("Score: %08d"):format(self.score), 500, 500)
+	lg.setColor(255, 255, 255, 255)
+	lg.draw(GUI_ScoreBar, 485, 500, 0, 1.5, 1.5)
+	lg.setFont(score_font)
+	lg.setColor(0, 255, 0)
+	lg.print(("Score: %08d"):format(self.score), 500, 500)
 end
 
 function state:drawlevel()

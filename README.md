@@ -1,9 +1,12 @@
-LOVE-Party 24 JAM!
-==================
+Evolutius!
+===========
+24th Ludum Dare Jam Theme: Evolution!
 
-Wecome to Love-party's entry to the 24th Ludum dare's Jam!
+Welcome to Evolutius, Created by LOVE-Party for the 24th Ludum Dare Jam!
+Fight your way through ever-changing terrain against foes that become 
+progressively craftier as your journey continues.
 
-Theme: Evolution!
+Though we ultimately didn't make the deadline, We will finish this.
 
 
 ## Team

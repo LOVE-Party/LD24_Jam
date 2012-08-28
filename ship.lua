@@ -74,18 +74,10 @@ function ship:update(dt, level)
 	for i, entity in next, self.entities do
 		entity:update(dt)
 		if entity.kind == "bullet" then
-			-- Remove off-screen bullets
---			if entity.pos_x <= 0 or
---			   entity.pos_x + entity.width >= SCREEN_WIDTH then
---				self.entities[i] = nil
---				entity.state = 'remove'
---			end
 			-- Hit things
 			for _, ship in next, Gamestate.space.enemies do
 				if entity:testcollision(ship) then
 					entity:collidewith(ship)
---					ship:dohit(entity.damage)
---					ship.hit = true
 					entity.state = 'remove'
 					self.entities[i] = nil
 				end

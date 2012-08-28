@@ -36,6 +36,7 @@ function _M.new(t)
 	e.dir_y  = t.dir_y  or 0
 	e.speed  = t.speed  or 0
 	e.facing = t.facing or 0
+	e.scale  = t.scale  or 1
 
 	-- Handles the texture, width, and height fields
 	_M.set_texture(e, t.texture or generic_icon)
@@ -94,7 +95,7 @@ function _M:draw()
 
 	-- draw the actual sprite
 	lg.setColor(255, 255, 255)
-	lg.draw(self.texture, self.pos_x, self.pos_y, self.facing)
+	lg.draw(self.texture, self.pos_x, self.pos_y, self.facing, self.scale, self.scale, self.width/2, self.height/2)
 	lg.pop()
 end
 

@@ -17,7 +17,7 @@ icons = {
 	heal30  = Image "gfx/RepairPack2.png";
 	heal60  = Image "gfx/RepairPack3.png";
 	heal100 = Image "gfx/RepairPack4.png";
-	turret  = Image "gfx/AutoTurret.png";
+	turret  = Image "gfx/pu_turret.png";
 }
 
 -------------------------------------------------------------------------

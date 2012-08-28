@@ -16,24 +16,18 @@ function ship.new(t)
 	local e = entity.new(t)
 	
 	e.kind      = 'ship'
-
 	e.name      = t.name or string.format('ship#%d', e.id)
-	e.shieldmax = t.shieldmax or 100
-	e.shield    = t.shield    or e.shieldmax
-	e.speed     = t.speed     or 100
-	e.damage    = t.damage    or e.shieldmax *.3
-	e.state     = t.state     or 'alive'
 
-	e.radius  = t.radius or e.height
+ 	e.speed     = t.speed     or 100
 
 	e.npc       = t.npc == nil and true or t.npc
 	e.dir_timer = t.dir_timer or 0
-
 	e.entities   = t.entities or {}
+	e.hit = false   -- was hit by player?
+
 	e.shooting   = false
 	e.shot_rate  = t.shot_rate or 0.2 -- time between shots in seconds.
 	e.shot_timer = 0
-	e.hit = false   -- was hit by player?
 
 	return setmetatable(e, _MT)
 end

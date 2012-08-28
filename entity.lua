@@ -29,17 +29,22 @@ function _M.new(t)
 	e.name   = t.name   or string.format('entity#%d', count)
 	e.id     = count
 
+
 	e.pos_x  = t.pos_x or 0
 	e.pos_y  = t.pos_y or 0
 	e.dir_x  = t.dir_x or 0
 	e.dir_y  = t.dir_y or 0
+	e.speed   = t.speed  or 0
 
-	e.speed  = t.speed  or 0
-	e.damage = t.damage or 0
-	e.radius = t.radius or 0
-	
 	-- Handles the texture, width, and height fields
 	_M.set_texture(e, t.texture or generic_icon)
+
+	e.state     = t.state     or 'alive'
+	e.shieldmax = t.shieldmax or 100
+	e.shield    = t.shield    or e.shieldmax
+	e.damage    = t.damage    or e.shieldmax *.3
+	e.radius    = t.radius    or e.height
+	
 
 	count = count + 1
 

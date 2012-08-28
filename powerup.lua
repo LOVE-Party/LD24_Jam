@@ -29,7 +29,7 @@ function _M.new(t)
 	p.effect  = t.effect or 'heal10'
 	p.dir_x   = -1
 	p.dir_y   = 0
-	p.speed   = 50
+	p.speed   = 64
 
 
 	_M.set_texture(p, icons[p.effect])

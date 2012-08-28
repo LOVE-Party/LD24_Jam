@@ -44,7 +44,7 @@ function _M.new(t)
 	e.shieldmax = t.shieldmax or 100
 	e.shield    = t.shield    or e.shieldmax
 	e.damage    = t.damage    or e.shieldmax *.3
-	e.radius    = t.radius    or e.height
+	e.radius    = t.radius    or (e.height + e.width)/2
 	
 
 	count = count + 1
@@ -81,7 +81,21 @@ function _M:testcollision(e)
 end
 
 function _M:draw()
-	love.graphics.draw(self.texture, self.pos_x, self.pos_y, self.facing )
+	local tau = math.pi*2
+	local hpratio = self.shield / self.shieldmax
+	local lg = love.graphics
+	lg.push()
+	
+	-- draw health-indicators
+	lg.setColor(0,0, 127)
+	lg.circle('line', self.pos_x, self.pos_y, self.radius)
+	lg.setColor(255-(255*hpratio), 255*hpratio, 0)
+	lg.arc('line', self.pos_x, self.pos_y, self.radius, 0, hpratio*tau)
+
+	-- draw the actual sprite
+	lg.setColor(255, 255, 255)
+	lg.draw(self.texture, self.pos_x, self.pos_y, self.facing)
+	lg.pop()
 end
 
 -- damages the entity according to the given number, 

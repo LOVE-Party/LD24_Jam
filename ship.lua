@@ -142,8 +142,9 @@ function ship:docollision(level, dt) -- this is new
 
 	local CurrentTileX = round(posx / 32 + level.x / 32, 0)
 	if CurrentTileX > 0 and CurrentTileX < level.width then
-		local testtile1 = math.max(	level.data[CurrentTileX] + level.offset[CurrentTileX], 
-									level.data[CurrentTileX+1] + level.offset[CurrentTileX + 1])
+		-- testtile1 has a magic value of 1, see Issue #22
+		local testtile1 = 1 + math.max(	level.data[CurrentTileX] + level.offset[CurrentTileX], 
+										level.data[CurrentTileX+1] + level.offset[CurrentTileX + 1])
 		local testtile2 = math.max(	level.data[CurrentTileX] - level.offset[CurrentTileX], 
 									level.data[CurrentTileX+1] - level.offset[CurrentTileX + 1])
 		if posy - self.height < (testtile1) * 32 then

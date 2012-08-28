@@ -3,6 +3,7 @@
 -- powerup
 -------------------------------------------------------------------------
 local entity = require "entity"
+local turret = require "hull.turret"
 
 local _M   = {_NAME = "powerup", _TYPE = 'module'}
 local _MT  = {__index = _M}
@@ -16,13 +17,14 @@ icons = {
 	heal30  = Image "gfx/RepairPack2.png";
 	heal60  = Image "gfx/RepairPack3.png";
 	heal100 = Image "gfx/RepairPack4.png";
+	turret  = Image "gfx/AutoTurret.png";
 }
 
 -------------------------------------------------------------------------
 
 function _M.getRandomPowerup(t)
 	local p = _M.new(t)
-	local set = {'heal10', 'heal30', 'heal60', 'heal100'}
+	local set = {'heal10', 'heal30', 'heal60', 'heal100', 'turret'}
 	p.effect = set[math.random(#set)]
 	return _M.new(p)
 end
@@ -70,6 +72,8 @@ function _M:doeffect(e)
 		e:heal(e.shieldmax*.6*impact)
 	elseif self.effect == 'heal100' then
 		e:heal(e.shieldmax*impact)
+	elseif self.effect == 'turret' then
+		e:addentity(turret.new{owner = e})
 	else
 		print("Unknown powerup effect", self.effect)
 	end

@@ -72,7 +72,7 @@ function ship:update(dt, level)
 	end
 	-- Update entities
 	for i, entity in next, self.entities do
-		if entity.type == "bullet" then
+		if entity.kind == "bullet" then
 			-- Move bullet bullet
 			entity.pos_x = entity.pos_x + entity.speed * dt
 			-- Remove off-screen bullets
@@ -159,8 +159,12 @@ function ship:die()
 	end
 end
 
+function ship:addentity(e)
+	self.entities[#self.entities+1] = e
+end
+
 function ship:shoot()
-	self.entities[#self.entities+1] = Bullet.new(self)
+	self:addentity(Bullet.new(self))
 end
 
 function ship:collidewith(e, dt)

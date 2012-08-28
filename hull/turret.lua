@@ -36,6 +36,15 @@ function _M:think(dt)
 end
 
 
+function _M:draw(...)
+	local own = self.owner
+	if own then
+		love.graphics.setColor(0,0,127)
+		love.graphics.line(self.pos_x, self.pos_y, own.pos_x, own.pos_y)
+		ship.draw(self, ...)
+	end
+end
+
 function _M:docollision()
 
 end

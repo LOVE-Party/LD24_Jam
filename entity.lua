@@ -45,7 +45,7 @@ function _M.new(t)
 	e.shieldmax = t.shieldmax or 100
 	e.shield    = t.shield    or e.shieldmax
 	e.damage    = t.damage    or e.shieldmax *.3
-	e.radius    = t.radius    or (e.height + e.width)/2
+	e.radius    = t.radius    or (e.height + e.width)/3
 	
 
 	count = count + 1

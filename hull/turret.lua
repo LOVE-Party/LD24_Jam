@@ -24,11 +24,14 @@ end
 
 function _M:think(dt)
 	if e.owner then
-		self.facing = e.owner.facing
-		self.shooting = e.owner.shooting
+		local own     = e.owner
+		self.facing   = own.facing
+		self.shooting = own.shooting
+		self.shot_rate  = own.shot_rate*2 -- thats half the firing rate
 
-		self.pos_x = e.owner.pos_x - 10
-		self.pos_y = e.owner.pos_y - 10
+		local theta, d = self.hardpoint, 16
+		self.pos_x = own.pos_x + math.cos(theta) * d
+		self.pos_y = own.pos_y + math.sin(theta) * d
 	else
 		self.facing = math.random
 		self.shooting = true

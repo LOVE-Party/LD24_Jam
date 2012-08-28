@@ -73,7 +73,10 @@ function _M:doeffect(e)
 	elseif self.effect == 'heal100' then
 		e:heal(e.shieldmax*impact)
 	elseif self.effect == 'turret' then
-		e:addentity(turret.new{owner = e})
+		local t = turret.new{owner = e}
+		e:addentity(t)
+		local tau = math.pi*2
+		t.hardpoint = math.random() * tau
 	else
 		print("Unknown powerup effect", self.effect)
 	end

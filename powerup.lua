@@ -19,6 +19,17 @@ icons = {
 
 }
 
+-------------------------------------------------------------------------
+
+function _M.getRandomPowerup(t)
+	local p = _M.new(t)
+	local set = {'heal10', 'heal30', 'heal60', 'heal100'}
+	p.effect = set[math.random(#set)]
+	return _M.new(p)
+end
+
+-------------------------------------------------------------------------
+
 function _M.new(t)
 	t = t or {}
 	p = entity.new(t)
@@ -49,9 +60,9 @@ function  _M:testcollision(e)
 	end
 end
 
-function _M:dohit()
-	self:die()
-end
+--function _M:dohit()
+	--self:die()
+--end
 
 function _M:doeffect(e)
 	assert(e, "Can't effect nothing")
@@ -72,7 +83,6 @@ end
 function _M:collidewith(e, dt)
 	assert(e, "Can't collide with nothing")
 	self:doeffect(e)
-	self:dohit()
 end
 
 

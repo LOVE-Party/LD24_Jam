@@ -153,15 +153,17 @@ function state:update(dt)
 	-- spawn additional enemies, to keep the level populated.
 	if self.timer >= 3 then
 		self.timer = 0
+		local e
 		self:addentity(Ship.new{
 			name = string.format("Enemy#%03d", #self.enemies);
 			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
 			pos_y = math.random(0, SCREEN_HEIGHT);
 			texture = Enemy2;
 		})
-		self:addentity(powerup.new{
+		self:addentity(powerup.getRandomPowerup{
 			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
 			pos_y = math.random(0, SCREEN_HEIGHT);
+
 		})
 	end
 	
@@ -170,9 +172,12 @@ function state:update(dt)
 		level.x = -800
 
 		self:addentity(powerup.new{
+			effect = 'heal60';
 			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
 			pos_y = math.random(0, SCREEN_HEIGHT);
 		})
+
+		self:addentity(powerup.getRandomPowerup())
 	end
 	
 	--Randomize tile when you are past it

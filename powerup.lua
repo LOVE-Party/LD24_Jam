@@ -16,7 +16,6 @@ icons = {
 	heal30  = Image "gfx/RepairPack2.png";
 	heal60  = Image "gfx/RepairPack3.png";
 	heal100 = Image "gfx/RepairPack4.png";
-
 }
 
 -------------------------------------------------------------------------
@@ -62,14 +61,15 @@ end
 
 function _M:doeffect(e)
 	assert(e, "Can't effect nothing")
+	local impact = self.shield / self.shieldmax
 	if self.effect == 'heal10' then
-		e:heal(e.shieldmax*.1)
+		e:heal(e.shieldmax*.1*impact)
 	elseif self.effect == 'heal30' then
-		e:heal(e.shieldmax*.3)
+		e:heal(e.shieldmax*.3*impact)
 	elseif self.effect == 'heal60' then
-		e:heal(e.shieldmax*.6)
+		e:heal(e.shieldmax*.6*impact)
 	elseif self.effect == 'heal100' then
-		e:heal(e.shieldmax)
+		e:heal(e.shieldmax*impact)
 	else
 		print("Unknown powerup effect", self.effect)
 	end

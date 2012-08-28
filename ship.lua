@@ -143,12 +143,12 @@ function ship:docollision(level, dt) -- this is new
 	local CurrentTileX = round(posx / 32 + level.x / 32, 0)
 	if CurrentTileX > 0 and CurrentTileX < level.width then
 		local testtile = math.max(level.data[CurrentTileX], level.data[CurrentTileX+1])
-		if posy - self.height < testtile * 32 then
+		if posy - self.height < (testtile + level.offset[CurrentTileX]) * 32 then
 			self:dohit(dt*10)
-			self.pos_y = (testtile * 32) + self.height
-		elseif posy + self.height > (level.height - testtile) * 32 then
+			self.pos_y = ((testtile + level.offset[CurrentTileX]) * 32) + self.height
+		elseif posy + self.height > (level.height - testtile + level.offset[CurrentTileX]) * 32 then
 			self:dohit(dt*10)
-			self.pos_y = ((level.height - testtile) * 32) - self.height
+			self.pos_y = ((level.height - testtile + level.offset[CurrentTileX]) * 32) - self.height
 		end
 
 	end

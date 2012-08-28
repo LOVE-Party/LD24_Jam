@@ -55,8 +55,14 @@ state.level = {name='default'; height = 15; scroll_speed = 50; scrolling = true;
 	3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,5,4,3,2,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,
 	1,1,1,1,1,1,1,1,1,5,6,5,6,5,6,5,6,5,1,1,1,1,1,1,1,1,2,3,4,3,2,3,2,3,4,
 	5,5,5,5,5,4,3,2,1,0};
+	offset= {
+	0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,3,3,3,3,
+	3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,5,4,3,2,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,
+	1,1,1,1,1,1,1,1,1,5,6,5,6,5,6,5,6,5,1,1,1,1,1,1,1,1,2,3,4,3,2,3,2,3,4,
+	5,5,5,5,5,4,3,2,1,0};
 	x = -640;
 	entities = {};
+	loop_counter = 0;
 }
 -- allows easy addition of entities to a level
 state.level.addentity = function(self, ent)
@@ -113,7 +119,8 @@ function state:enter()
 	end
 	
 	for x = 1, #self.level.data do
-		self.level.data[x] = math.random(6)
+		self.level.data[x] = math.random(5)
+		self.level.offset[x] = math.floor(math.sin(x / 8) * 4)
 	end
 
 	--  Audio
@@ -170,19 +177,22 @@ function state:update(dt)
 	-- Loop level
 	if level.x > level.width * 32 then
 		level.x = -800
-
+		
+		level.loop_counter = level.loop_counter + 1
+		
 		self:addentity(powerup.new{
 			effect = 'heal60';
 			pos_x = math.random(SCREEN_WIDTH/2, SCREEN_WIDTH);
 			pos_y = math.random(0, SCREEN_HEIGHT);
 		})
-
+		
 		self:addentity(powerup.getRandomPowerup())
 	end
 	
 	--Randomize tile when you are past it
 	if level.x / 32 > 15 and level.x / 32 < #self.level.data + 15 then
 		self.level.data[math.floor((level.x / 32) - 15)] = math.random(6)
+		self.level.offset[math.floor((level.x / 32) - 15)] = math.floor(math.sin(math.floor((level.x / 32) - 15) / (8 - (level.loop_counter % 4))) * 4)
 	end
 	
 	
@@ -285,13 +295,13 @@ function state:drawlevel()
 	local level = self.level
 
 	for x=1, level.width do
-		for y=1, level.data[x] do
-			love.graphics.draw(dirt,(x*32) - level.x ,y*32)
-			love.graphics.draw(dirt,(x*32) - level.x ,(level.height - y) * 32)
+		for y=-6, level.data[x] do
+			love.graphics.draw(dirt,(x*32) - level.x ,(y + level.offset[x])*32)
+			love.graphics.draw(dirt,(x*32) - level.x ,(level.height - y + level.offset[x]) * 32)
 
 			if y == level.data[x] then
-				love.graphics.draw(dirtbottom,(x*32) - level.x ,y*32)
-				love.graphics.draw(grass,(x*32) - level.x ,(level.height - y) * 32)
+				love.graphics.draw(dirtbottom,(x*32) - level.x ,(y + level.offset[x])*32)
+				love.graphics.draw(grass,(x*32) - level.x ,(level.height - y + level.offset[x]) * 32)
 			end
 		end
 	end

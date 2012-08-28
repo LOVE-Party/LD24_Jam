@@ -208,8 +208,8 @@ function state:update(dt)
 			for j=i+1,#enemies do
 				oship = enemies[j]
 				if ship:testcollision(oship) then
-					ship:collidewith(ship, dt)
-					oship:collidewith(player, dt)
+					ship:collidewith(oship, dt)
+					oship:collidewith(ship, dt)
 				end
 			end
 			-- as a crude hack, we'll simply remove entities that are dead.

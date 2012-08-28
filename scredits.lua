@@ -9,6 +9,9 @@
 local Gamestate = require "lib.gamestate"
 local soundmanager = require "lib.soundmanager"
 
+local music = love.audio.newSource("sfx/credits.ogg", 'stream') -- long audio files should be streamed
+music:setLooping(true)
+
 local _M = Gamestate.new()
 _M._NAME = "scredits"
 Gamestate.credits = _M -- so Gamestate.switch() can find us.
@@ -58,7 +61,7 @@ Keep being Awesome.
 
 
 
-
+"Stay a while and listen" ;).
 
 
 
@@ -102,7 +105,11 @@ function _M:enter()
 	self.font = love.graphics.newFont(height*0.03) -- main font
 	self.wrap = select(2, self.font:getWrap(self.credits, width)) -- wrap length for the credits
 	self.offset = 0 -- rendering offset for the credits
-
+	
+	--audio
+	music:rewind()
+	music:play()
+	
 	self.bg = love.graphics.newImage('gfx/MainMenu_BG.png')
 
 end
@@ -153,6 +160,7 @@ end
 
 function _M:keypressed(key, unicode)
 	if key == 'enter' or key == 'return' or key == ' ' then
+		music:stop()
 		Gamestate.switch(Gamestate.main);
 	end
 end

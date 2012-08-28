@@ -140,7 +140,7 @@ function _M:heal(n)
 end
 
 function _M:collidewith(e, dt)
-	assert(e, "Can't collide with nothing!")
+	assert(e and e._TYPE == 'entity', string.format("Expected 'entity', got '%s' instead.", e and e.type or type(e)))
 	e:dohit(self.damage*dt)
 end
 

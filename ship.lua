@@ -163,6 +163,7 @@ function ship:die()
 end
 
 function ship:addentity(e)
+	assert(e and e._TYPE == 'entity', string.format("Expected 'entity', got '%s' instead.", e and e.type or type(e)))
 	if e then
 		self.entities[#self.entities+1] = e
 	end
@@ -173,6 +174,7 @@ function ship:shoot()
 end
 
 function ship:collidewith(e, dt)
+	assert(e and e._TYPE == 'entity', string.format("Expected 'entity', got '%s' instead.", e and e.type or type(e)))
 	if e.kind == 'ship' then
 		self:dohit(e.damage*dt)
 	end

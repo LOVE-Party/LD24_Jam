@@ -62,7 +62,7 @@ function  _M:testcollision(e)
 end
 
 function _M:doeffect(e)
-	assert(e, "Can't effect nothing")
+	assert(e and e._TYPE == 'entity', string.format("Expected 'entity', got '%s' instead.", e and e.type or type(e)))
 	local impact = self.shield / self.shieldmax
 	if self.effect == 'heal10' then
 		e:heal(e.shieldmax*.1*impact)
@@ -81,7 +81,7 @@ function _M:doeffect(e)
 end
 
 function _M:collidewith(e, dt)
-	assert(e, "Can't collide with nothing")
+	assert(e and e._TYPE == 'entity', string.format("Expected 'entity', got '%s' instead.", e and e.type or type(e)))
 	if e.kind == 'ship' then
 		self:doeffect(e)
 		self:die()

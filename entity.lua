@@ -139,6 +139,7 @@ end
 
 function _M:collidewith(e, dt)
 	assert(e, "Can't collide with nothing!")
+	e:dohit(self.damage*dt)
 end
 
 -------------------------------------------------------------------------

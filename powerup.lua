@@ -60,10 +60,6 @@ function  _M:testcollision(e)
 	end
 end
 
---function _M:dohit()
-	--self:die()
---end
-
 function _M:doeffect(e)
 	assert(e, "Can't effect nothing")
 	if self.effect == 'heal10' then
@@ -82,7 +78,12 @@ end
 
 function _M:collidewith(e, dt)
 	assert(e, "Can't collide with nothing")
-	self:doeffect(e)
+	if e.kind == 'ship' then
+		self:doeffect(e)
+		self:die()
+	else
+		entity.collidewith(e, dt)
+	end
 end
 
 

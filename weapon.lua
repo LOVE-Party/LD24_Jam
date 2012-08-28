@@ -21,7 +21,6 @@ function Bullet.new(owner, t)
 	t = t or {}
 	local e = entity.new()
 
-	e.type = 'projectile'
 	e.kind = 'bullet'
 
 	e.pos_x  = t.pos_x or owner.pos_x or 0

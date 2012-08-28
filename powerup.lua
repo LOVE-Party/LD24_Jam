@@ -37,6 +37,10 @@ function _M.new(t)
 	return setmetatable(p, _MT)
 end
 
+function _M:think(dt)
+	self.facing = self.facing +dt
+end
+
 function  _M:testcollision(e)
 	if e.npc and not self.faction == 'npc' then
 		return false

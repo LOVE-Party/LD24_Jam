@@ -30,11 +30,12 @@ function _M.new(t)
 	e.id     = count
 
 
-	e.pos_x  = t.pos_x or 0
-	e.pos_y  = t.pos_y or 0
-	e.dir_x  = t.dir_x or 0
-	e.dir_y  = t.dir_y or 0
-	e.speed   = t.speed  or 0
+	e.pos_x  = t.pos_x  or 0
+	e.pos_y  = t.pos_y  or 0
+	e.dir_x  = t.dir_x  or 0
+	e.dir_y  = t.dir_y  or 0
+	e.speed  = t.speed  or 0
+	e.facing = t.facing or 0
 
 	-- Handles the texture, width, and height fields
 	_M.set_texture(e, t.texture or generic_icon)
@@ -80,7 +81,7 @@ function _M:testcollision(e)
 end
 
 function _M:draw()
-	love.graphics.draw(self.texture, self.pos_x, self.pos_y)
+	love.graphics.draw(self.texture, self.pos_x, self.pos_y, self.facing )
 end
 
 -- damages the entity according to the given number, 
@@ -122,7 +123,7 @@ function _M:heal(n)
 end
 
 function _M:collidewith(e, dt)
-
+	assert(e, "Can't collide with nothing!")
 end
 
 -------------------------------------------------------------------------

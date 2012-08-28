@@ -20,10 +20,10 @@ function ship.new(t)
 
  	e.speed     = t.speed     or 100
 
-	e.npc       = t.npc == nil and true or t.npc
-	e.dir_timer = t.dir_timer or 0
-	e.entities   = t.entities or {}
-	e.hit = false   -- was hit by player?
+	e.npc        = (t.npc == nil and true) or t.npc
+	e.dir_timer  = t.dir_timer or 0
+	e.entities   = t.entities  or {}
+	e.hit        = false   -- was hit by player?
 
 	e.shooting   = false
 	e.shot_rate  = t.shot_rate or 0.2 -- time between shots in seconds.
@@ -43,12 +43,13 @@ end
 
 function ship:think(dt)
 	if self.npc then
+		self.facing = math.atan2(self.dir_y, self.dir_x)
 		self.dir_timer = self.dir_timer + dt
 		-- turn change directions
 		if self.dir_timer > 1 then
 			self.dir_timer = 0
-			self.dir_x = math.random(-1, 1)
-			self.dir_y = math.random(-1, 1)
+			self.dir_x = (math.random()*2) - 1
+			self.dir_y = (math.random()*2) - 1
 		end
 	end
 end

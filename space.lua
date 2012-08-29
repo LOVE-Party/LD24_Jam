@@ -29,6 +29,8 @@ local GUI_ScoreBar      = love.graphics.newImage("gfx/GUI_ScoreBar.png")
 -- SFX
 state.music = love.audio.newSource("sfx/BGM.ogg", 'stream') -- long audio files should be streamed
 state.music:setLooping(true)
+local SFX_Game_Over = love.audio.newSource("sfx/game_over.ogg", "static") --Gameover
+
 
 state.player = Ship.new {name = 'player';
 	texture = spaceship;
@@ -39,8 +41,10 @@ state.gui_hull_critical_timer = 0
 
 function state.player:die(...)
 	Ship.die(self, ...)
+	
+	love.audio.play(SFX_Game_Over)
 
-	state.endtimer = 3
+	state.endtimer = 10
 	state.endtype = 'death'
 	state.music:stop()
 	state.level.scrolling = false
@@ -199,6 +203,7 @@ function state:update(dt)
 
 	-- update the Player entity
 	self.player:update(dt, level)
+
 
 	-- Loop through all entities, test and act upon any collisions
 	local player, ship, oship = self.player

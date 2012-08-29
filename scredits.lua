@@ -40,7 +40,7 @@ LOVE-Party 24 Jam team!
 (Hugglee)
 
 -= VividReality =-
-(Graphics, Audio and some Coding)
+(Jack-of-all-trades)
 
 
 

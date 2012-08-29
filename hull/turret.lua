@@ -27,7 +27,7 @@ function _M:think(dt)
 		local own     = e.owner
 		self.facing   = own.facing
 		self.shooting = own.shooting
-		self.shot_rate  = own.shot_rate*2 -- thats half the firing rate
+		self.shot_rate  = own.shot_rate/.66 -- thats 2/3 the firing rate
 
 		local theta, d = self.hardpoint, 16
 		self.pos_x = own.pos_x + math.cos(theta) * d

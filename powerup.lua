@@ -12,19 +12,23 @@ setmetatable(_M, _MMT)
 -------------------------------------------------------------------------
 local Image = love.graphics.newImage
 icons = {
-	generic  = Image "gfx/RepairPack.png";
-	heal10  = Image "gfx/RepairPack.png";
-	heal30  = Image "gfx/RepairPack2.png";
-	heal60  = Image "gfx/RepairPack3.png";
-	heal100 = Image "gfx/RepairPack4.png";
-	turret  = Image "gfx/pu_turret.png";
+	generic     = Image "gfx/pu_crate01.png";
+	heal10      = Image "gfx/RepairPack.png";
+	heal30      = Image "gfx/RepairPack2.png";
+	heal60      = Image "gfx/RepairPack3.png";
+	heal100     = Image "gfx/RepairPack4.png";
+	turret      = Image "gfx/pu_turret.png";
+	crate_low   = Image "gfx/pu_crate01.png";
+	crate_mid   = Image "gfx/pu_crate02.png";
+	crate_high  = Image "gfx/pu_crate03.png";
 }
 
 -------------------------------------------------------------------------
 
 function _M.getRandomPowerup(t)
 	local p = _M.new(t)
-	local set = {'heal10', 'heal30', 'heal60', 'heal100', 'turret'}
+	local set = {'heal10', 'heal30', 'heal60', 'heal100', 'turret',
+		'crate_high', 'crate_mid', 'crate_low'}
 	p.effect = set[math.random(#set)]
 	return _M.new(p)
 end
@@ -74,9 +78,22 @@ function _M:doeffect(e)
 		e:heal(e.shieldmax*impact)
 	elseif self.effect == 'turret' then
 		local t = turret.new{owner = e}
+		t.shield = t.shieldmax * impact
 		e:addentity(t)
 		local tau = math.pi*2
 		t.hardpoint = math.random() * tau
+	elseif self.effect == 'crate_low' then
+		if e.score then
+			e.score = e.score + (25 * impact)
+		end
+	elseif self.effect == 'crate_mid' then
+		if e.score then
+			e.score = e.score + (50 * impact)
+		end
+	elseif self.effect == 'crate_high' then
+		if e.score then
+			e.score = e.score + (100 * impact)
+		end
 	else
 		print("Unknown powerup effect", self.effect)
 	end

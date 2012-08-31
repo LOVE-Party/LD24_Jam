@@ -75,7 +75,6 @@ state.level.addentity = function(self, ent)
 end
 state.level.width = #state.level.data;
 
-state.score = 0
 local score_font = love.graphics.newFont(32)
 
 -- Automatically creates and caches requested widths of the Health/shield
@@ -102,6 +101,7 @@ function state:enter()
 	self.player.shieldmax  = 100 -- and this
 	self.player.shield     = self.player.shieldmax
 	self.player.state      = 'alive'
+	self.player.score      = 0
 	self.timer = 0
 	self.endtimer = false
 	self.level.scrolling = true
@@ -242,7 +242,7 @@ function state:update(dt)
 
 	-- Add to score
 	if self.player.state ~= "dead" then
-		self.score = self.score + 2*dt
+		self.player.score = self.player.score + 2*dt
 	end
 end
 
@@ -293,7 +293,7 @@ function state:draw()
 	lg.draw(GUI_ScoreBar, 485, 500, 0, 1.5, 1.5)
 	lg.setFont(score_font)
 	lg.setColor(0, 255, 0)
-	lg.print(("Score: %08d"):format(self.score), 500, 500)
+	lg.print(("Score: %08d"):format(self.player.score), 500, 500)
 end
 
 function state:drawlevel()

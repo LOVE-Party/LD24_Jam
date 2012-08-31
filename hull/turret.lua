@@ -15,8 +15,8 @@ function _M.new(t)
 	e = ship.new(t)
 
 	e.shooting = true
-	e.owner = t.owner or nil
-	e.facing = (e.owner and e.owner.facing) or math.random()*math.pi*2
+	e.owner    = t.owner or nil
+	e.facing   = (e.owner and e.owner.facing) or math.random()*math.pi*2
 	e.shooting = false
 
 	return setmetatable(e, _MT)
@@ -33,7 +33,6 @@ function _M:think(dt)
 		self.pos_x = own.pos_x + math.cos(theta) * d
 		self.pos_y = own.pos_y + math.sin(theta) * d
 	else
-		self.facing = math.random
 		self.shooting = true
 	end
 end

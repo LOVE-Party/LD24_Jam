@@ -87,6 +87,8 @@ function ship:update(dt, level)
 					entity:collidewith(ship)
 					entity.state = 'remove'
 					self.entities[i] = nil
+
+					ship.hit = true
 				end
 			end
 
@@ -164,7 +166,7 @@ function ship:die()
 
 	if self.npc then
 		if self.hit then    -- Was the NPC hit by the player?
-			Gamestate.space.score = Gamestate.space.score + 25
+			Gamestate.space.player.score = Gamestate.space.player.score + 25
 		end
 	end
 end
